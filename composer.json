@@ -40,8 +40,8 @@
         "twig/twig": "^3.0"
     },
     "autoload": {
-        "psr-0": {
-            "Granada/Builder": "src/"
+        "psr-4": {
+            "Granada\\Builder\\": "src/"
         }
     },
     "require-dev": {
