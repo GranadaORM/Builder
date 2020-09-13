@@ -114,7 +114,7 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string
 	 */
 	public static function humanNames() {
-		return \Granada\Autobuild::pluralize('{{ humanName }}');
+		return \Granada\Builder\Autobuild::pluralize('{{ humanName }}');
 	}
 
 	/**
