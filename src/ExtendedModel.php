@@ -124,10 +124,6 @@ class ExtendedModel extends \Granada\Model {
     }
 
     public function __set($property, $value) {
-
-        if (!$value) {
-            return NULL;
-        }
         $datetype = $this->datetype($property);
         if ($datetype) {
             $class = get_class($this);
