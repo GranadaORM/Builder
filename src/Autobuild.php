@@ -368,7 +368,7 @@ class Autobuild extends \Granada\ORM {
 			} else if ($first == 'decimal') {
 				$tftype = 'float';
 				$doctype = 'float';
-			} else if (($first == 'int') || ($first == 'tinyint')) {
+			} else if (($first == 'int') || ($first == 'mediumint') || ($first == 'tinyint')) {
 				if ($length == '1') {
 					if (isset($tablefield['Default'])) {
 						$tftype = 'bool';

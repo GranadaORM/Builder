@@ -393,9 +393,6 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 {% if field.type == 'serialize' %}
 {% set continue = true %}
 {% endif %}
-{% if field.name == 'user_id' %}
-{% set continue = true %}
-{% endif %}
 {% if field.hidden_in_forms %}
 {% set continue = true %}
 {% endif %}
