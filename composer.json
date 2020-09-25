@@ -38,7 +38,8 @@
         "cakephp/chronos": "^2.0",
         "doctrine/inflector": "^2.0",
         "twig/twig": "^3.0",
-        "granadaorm/granada": "^2.8"
+        "granadaorm/granada": "^2.8",
+        "respect/validation": "^2.0"
     },
     "autoload": {
         "psr-4": {

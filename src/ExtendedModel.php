@@ -337,4 +337,31 @@ class ExtendedModel extends \Granada\Model {
         return new $class($this);
     }
 
+    /**
+     * Validate the form field depending on the values of the form
+     * @param string $field The field name that just changed and needs validation
+     * @param array $form_data POST data of the form to give context about the value
+     * @return string|true If not true, an error message to display to the user
+     */
+	public function validate($field, $form_data) {
+        // Check if the field is required
+	    if ($this->fieldIsRequired($field)) {
+            $test = Validate::check_not_empty($form_data[$field]);
+            if ($test !== true) {
+                return $test;
+            }
+        }
+
+        // Check if the field is numeric
+
+        // Check if the field is too long
+
+        // Check if the field is a date
+        if (array_key_exists($field, $this->datefields())) {
+        }
+
+        // Passed all the tests
+        return true;
+	}
+
 }
