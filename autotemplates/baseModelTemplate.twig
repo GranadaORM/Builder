@@ -256,18 +256,18 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 		);
 	}
 
+	public static function enum_options($field_name) {
 {% for field in structure %}
 {% if field.type == 'enum' %}
-	public static function enum_options_{{ field.name }}() {
-		$optx = explode(',', '{{ field.options }}');
-		foreach ($optx as $idx => $opt) {
-			$optx[$idx] = str_replace('&#039;', '', $opt);
+		if ($field_name == '{{ field.name }}') {
+			$optx = explode(',', str_replace('&#039;', '', '{{ field.options }}'));
+			return array_combine($optx, $optx);
 		}
-		return $optx;
-	}
 
 {% endif %}
 {% endfor %}
+		return array();
+	}
 
 	/**
 	 * Should we delete this record for real or just flag as deleted?
