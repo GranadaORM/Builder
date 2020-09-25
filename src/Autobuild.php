@@ -428,6 +428,12 @@ class Autobuild extends \Granada\ORM {
 			if ($tablefieldname == 'id') {
 				$hidden_in_forms = true;
 			}
+			if ($tablefieldname == 'created_at') {
+				$hidden_in_forms = true;
+			}
+			if ($tablefieldname == 'updated_at') {
+				$hidden_in_forms = true;
+			}
 			if (array_key_exists('_hidden', $cflags)) {
 				$hidden_in_forms = true;
 			}
