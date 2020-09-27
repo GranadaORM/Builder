@@ -334,7 +334,7 @@ class ExtendedModel extends \Granada\Model {
      * @return \Granada\Form\Form
      */
     public function getForm($class) {
-        return new $class($this);
+        return new \Granada\Form\Form($class, $this);
     }
 
     /**
