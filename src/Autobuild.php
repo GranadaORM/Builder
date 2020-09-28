@@ -370,7 +370,7 @@ class Autobuild extends \Granada\ORM {
 				$doctype = 'float';
 			} else if (($first == 'int') || ($first == 'mediumint') || ($first == 'tinyint')) {
 				if ($length == '1') {
-					if (isset($tablefield['Default'])) {
+					if (isset($tablefield['Default']) || ($tablefield['Null'] == 'NO')) {
 						$tftype = 'bool';
 						$doctype = 'boolean';
 						$required = 'false';
