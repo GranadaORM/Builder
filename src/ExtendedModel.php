@@ -370,8 +370,10 @@ class ExtendedModel extends \Granada\Model {
         if (array_key_exists($field, $this->datefields())) {
             if ($form_data[$field]) {
                 // Test if we can parse it
+                    $this->$field = $form_data[$field];
                 try {
-                    \Cake\Chronos\Chronos::parse($form_data[$field]);
+                    $this->$field = $form_data[$field];
+                    //\Cake\Chronos\Chronos::parse($form_data[$field]);
                 } catch (\Exception $e) {
                     return 'Date is not quite right';
                 }

@@ -232,8 +232,8 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 			),
 {% elseif field.type == 'dob' %}
 			'{{ field.name }}' => array(
-				'type' => 'date',
-				'format' => 'Y-m-d',
+				'type' => 'dob',
+				'format' => 'd/m/Y',
 				'timezone_mode' => '{{ field.timezone_mode }}',
 				'timezone_comparison_mode' => '{{ field.timezone_comparison_mode }}',
 			),
