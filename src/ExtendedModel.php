@@ -344,6 +344,11 @@ class ExtendedModel extends \Granada\Model {
      * @return string|true If not true, an error message to display to the user
      */
     public function validate($field, $form_data) {
+        if (!array_key_exists($field, $form_data)) {
+            // Likely for a form that is omitting this field
+            return true;
+        }
+
         // Check if the field is required
         if ($this->fieldIsRequired($field)) {
             $test = Validate::check_not_empty($form_data[$field]);
