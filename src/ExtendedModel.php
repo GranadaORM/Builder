@@ -343,25 +343,37 @@ class ExtendedModel extends \Granada\Model {
      * @param array $form_data POST data of the form to give context about the value
      * @return string|true If not true, an error message to display to the user
      */
-	public function validate($field, $form_data) {
+    public function validate($field, $form_data) {
         // Check if the field is required
-	    if ($this->fieldIsRequired($field)) {
+        if ($this->fieldIsRequired($field)) {
             $test = Validate::check_not_empty($form_data[$field]);
             if ($test !== true) {
                 return $test;
             }
         }
 
-        // Check if the field is numeric
-
         // Check if the field is too long
+        $maxlength = $this->fieldLength($field);
+        if ($maxlength > 0) {
+            $test = Validate::check_string($form_data[$field], $maxlength);
+            if ($test !== true) {
+                return $test;
+            }
+        }
 
         // Check if the field is a date
         if (array_key_exists($field, $this->datefields())) {
+            if ($form_data[$field]) {
+                // Test if we can parse it
+                try {
+                    \Cake\Chronos\Chronos::parse($form_data[$field]);
+                } catch (\Exception $e) {
+                    return 'Date is not quite right';
+                }
+            }
         }
 
         // Passed all the tests
         return true;
-	}
-
+    }
 }
