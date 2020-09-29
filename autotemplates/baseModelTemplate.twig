@@ -192,11 +192,20 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return boolean
 	 */
 	public static function hasAttribute($field) {
-		return array_key_exists($field, array(
+		return array_key_exists($field, self::attributes());
+	}
+
+	/**
+	 * List of fields in the model
+	 *
+	 * @return string[]
+	 */
+	public static function attributes() {
+		return array(
 {% for field in structure %}
-			'{{ field.name }}' => true,
+			'{{ field.name }}' => '{{ field.name }}',
 {% endfor %}
-		));
+		);
 	}
 
 	/**
