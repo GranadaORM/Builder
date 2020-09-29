@@ -165,6 +165,10 @@ class ExtendedModel extends \Granada\Model {
                 $value = $date->toTimeString();
             }
         }
+        // Handle empty value for references
+        if (!$value && $this->fieldType($property) == 'reference') {
+            $value = null;
+        }
         return parent::__set($property, $value);
     }
 
