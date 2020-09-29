@@ -129,6 +129,8 @@ class ExtendedModel extends \Granada\Model {
             $class = get_class($this);
             if (is_a($value, '\Cake\Chronos\Chronos')) {
                 $date = $value;
+            } else if (!$value) {
+                return parent::__set($property, null);
             } else {
                 if (($value == 'CURRENT_TIMESTAMP') || ($value == 'current_timestamp()')) {
                     $date = \Cake\Chronos\Chronos::now();
