@@ -79,11 +79,11 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string
 	 */
 	public function fieldType($field_name) {
-		$fields = array(
+		$fields = [
 {% for field in structure %}
 		'{{ field.name }}' => '{{ field.type }}',
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field_name, $fields)) {
 			return false;
 		}
@@ -121,13 +121,13 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * The columns used as part of the representation method
 	 */
 	public static function uniqueColumns() {
-		return array(
+		return [
 {% for field in structure %}
 {% if field.unique %}
 			'{{ field.name }}',
 {% endif %}
 {% endfor %}
-		);
+		];
 	}
 
 	/**
@@ -172,7 +172,7 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
      * The columns used as part of the representation method
      */
     public static function representationColumns() {
-            return array('{{ representation }}');
+            return ['{{ representation }}'];
     }
 
 	/**
@@ -180,9 +180,9 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * Override to ignore more
 	 */
 	public function ignoreDirtyForTimestamps() {
-		return array(
+		return [
 			'sort_order',
-		);
+		];
 	}
 
 	/**
@@ -201,11 +201,11 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string[]
 	 */
 	public static function attributes() {
-		return array(
+		return [
 {% for field in structure %}
 			'{{ field.name }}' => '{{ field.name }}',
 {% endfor %}
-		);
+		];
 	}
 
 	/**
@@ -230,39 +230,39 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return array list of fields
 	 */
 	public function datefields() {
-		return array(
+		return [
 {% for field in structure %}
 {% if field.type == 'date' %}
-			'{{ field.name }}' => array(
+			'{{ field.name }}' => [
 				'type' => 'date',
 				'format' => 'Y-m-d',
 				'timezone_mode' => '{{ field.timezone_mode }}',
 				'timezone_comparison_mode' => '{{ field.timezone_comparison_mode }}',
-			),
+			],
 {% elseif field.type == 'dob' %}
-			'{{ field.name }}' => array(
+			'{{ field.name }}' => [
 				'type' => 'dob',
 				'format' => 'd/m/Y',
 				'timezone_mode' => '{{ field.timezone_mode }}',
 				'timezone_comparison_mode' => '{{ field.timezone_comparison_mode }}',
-			),
+			],
 {% elseif field.type == 'datetime' %}
-			'{{ field.name }}' => array(
+			'{{ field.name }}' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => '{{ field.timezone_mode }}',
 				'timezone_comparison_mode' => '{{ field.timezone_comparison_mode }}',
-			),
+			],
 {% elseif field.type == 'time' %}
-			'{{ field.name }}' => array(
+			'{{ field.name }}' => [
 				'type' => 'time',
 				'format' => 'H:i:s',
 				'timezone_mode' => '{{ field.timezone_mode }}',
 				'timezone_comparison_mode' => '{{ field.timezone_comparison_mode }}',
-			),
+			],
 {% endif %}
 {% endfor %}
-		);
+		];
 	}
 
 	public static function enum_options($field_name) {
@@ -275,7 +275,7 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 
 {% endif %}
 {% endfor %}
-		return array();
+		return [];
 	}
 
 	/**
@@ -313,17 +313,17 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string[] list of comment tags (_ prefixes)
 	 */
 	public function fieldTags($field) {
-		$tags = array(
+		$tags = [
 {% for field in structure %}
-			'{{ field.name }}' => array(
+			'{{ field.name }}' => [
 {% for flag in field.comment_flags %}
 				'{{ flag }}',
 {% endfor %}
-			),
+			],
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $tags)) {
-			return array();
+			return [];
 		}
 		return $tags[$field];
 	}
@@ -334,13 +334,13 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string The field human name
 	 */
 	public function fieldHumanName($field) {
-		$items = array(
+		$items = [
 {% for field in structure %}
 			'{{ field.name }}' => '{{ field.displayname }}',
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return array();
+			return [];
 		}
 		return $items[$field];
 	}
@@ -352,13 +352,13 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string The field comment
 	 */
 	public function fieldHelpText($field) {
-		$items = array(
+		$items = [
 {% for field in structure %}
 			'{{ field.name }}' => '{{ field.helptext }}',
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return array();
+			return [];
 		}
 		return $items[$field];
 	}
@@ -368,7 +368,7 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string[] admin list fields
 	 */
 	public function adminFields() {
-		return array(
+		return [
 {% set continue = false %}
 {% set fieldcounter = 0 %}
 {% for field in structure %}
@@ -414,7 +414,7 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 {% endif %}
 {% endif %}
 {% endfor %}
-		);
+		];
 	}
 
 	/**
@@ -422,13 +422,13 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return string[] form fields
 	 */
 	public function formFields() {
-		return array(
+		return [
 {% for field in structure %}
 {% if field.hidden_in_forms == false %}
 			'{{ field.name }}',
 {% endif %}
 {% endfor %}
-		);
+		];
 	}
 
 	/**
@@ -437,11 +437,11 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return integer
 	 */
 	public function fieldDefaultValue($field) {
-		$items = array(
+		$items = [
 {% for field in structure %}
 			'{{ field.name }}' => '{{ field.default_value }}',
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -454,11 +454,11 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return integer
 	 */
 	public function fieldLength($field) {
-		$items = array(
+		$items = [
 {% for field in structure %}
 			'{{ field.name }}' => {{ field.length }},
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -471,11 +471,11 @@ abstract class Base{{ modelname }} extends {{ modelToExtend }} {
 	 * @return boolean
 	 */
 	public function fieldIsRequired($field) {
-		$items = array(
+		$items = [
 {% for field in structure %}
 			'{{ field.name }}' => {{ field.required }},
 {% endfor %}
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return false;
 		}
