@@ -355,31 +355,55 @@ class ExtendedModel extends \Granada\Model {
             return true;
         }
 
+        $fieldType = $this->fieldType($field);
+
         // Check if the field is required
         if ($this->fieldIsRequired($field)) {
-            $test = Validate::check_not_empty($form_data[$field]);
-            if ($test !== true) {
-                return $test;
+            if ($form_data[$field] === '') {
+                return 'This cannot be left empty';
+            }
+            if (is_null($form_data[$field])) {
+                return 'This cannot be left empty';
             }
         }
 
         // Check if the field is too long
         $maxlength = $this->fieldLength($field);
         if ($maxlength > 0) {
-            $test = Validate::check_string($form_data[$field], $maxlength);
-            if ($test !== true) {
-                return $test;
+            if (!is_string($form_data[$field])) {
+                return 'Invalid';
+            }
+            if (strlen($form_data[$field]) > $maxlength) {
+                return 'String too long. Max ' . $maxlength . ' characters';
             }
         }
 
         // Check if the field is a date
-        if (array_key_exists($field, $this->datefields())) {
+        if ($fieldType == 'date' || $fieldType == 'datetime' || $fieldType == 'dob' || $fieldType == 'time') {
             if ($form_data[$field]) {
                 // Test if we can set it as there are different parsing methods
                 try {
                     $this->$field = $form_data[$field];
                 } catch (\Exception $e) {
                     return 'Date is not quite right';
+                }
+            }
+        }
+
+        // Check if the field is numeric
+        if ($fieldType == 'integer' || $fieldType == 'float') {
+            if (!is_numeric($form_data[$field])) {
+                return 'This must be a number';
+            }
+        }
+
+        // Check reference exists
+        if ($fieldType == 'reference') {
+            if (is_numeric($form_data[$field])) {
+                $refmodel = $this->refModel($field);
+                $count = $refmodel::model()->where('id', $form_data[$field])->count();
+                if (!$count) {
+                    return 'Could not find this item';
                 }
             }
         }
