@@ -255,6 +255,9 @@ abstract class ExtendedModel extends \Granada\Model {
         if ($class::hasAttribute('is_deleted')) {
             $query = $query->where_is_deleted(0);
         }
+        if ($class::isNestedSet()) {
+            $query = $query->where_lft_gt(1);
+        }
         if ($class::hasAttribute('enabled')) {
             $query = $query->where_enabled(1);
         }
