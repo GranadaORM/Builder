@@ -1,6 +1,5 @@
 <?php
 $db_host                    = 'database';
-$db_host                    = 'database';
 $db_name                    = 'testdb';
 $db_username                = 'root';
 $db_password                = 'root';

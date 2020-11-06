@@ -491,6 +491,10 @@ class Autobuild extends \Granada\ORM {
 
 		if ((in_array('root', $fieldnames)) && (in_array('level', $fieldnames)) && (in_array('lft', $fieldnames)) && (in_array('rgt', $fieldnames))) {
 			$nestedSet = true;
+			$structure['root']['hidden_in_forms'] = true;
+			$structure['level']['hidden_in_forms'] = true;
+			$structure['lft']['hidden_in_forms'] = true;
+			$structure['rgt']['hidden_in_forms'] = true;
 		} else {
 			$nestedSet = false;
 		}

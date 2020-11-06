@@ -59,16 +59,16 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public function fieldType($field_name) {
-		$fields = array(
-			'id' => 'integer',
-			'datetime1' => 'datetime',
-			'datetime2' => 'datetime',
-			'datetime3' => 'datetime',
-			'datetime4' => 'datetime',
-			'datetime5' => 'datetime',
-			'date1' => 'date',
-			'time1' => 'time',
-		);
+		$fields = [
+		'id' => 'integer',
+		'datetime1' => 'datetime',
+		'datetime2' => 'datetime',
+		'datetime3' => 'datetime',
+		'datetime4' => 'datetime',
+		'datetime5' => 'datetime',
+		'date1' => 'date',
+		'time1' => 'time',
+		];
 		if (!array_key_exists($field_name, $fields)) {
 			return false;
 		}
@@ -99,15 +99,15 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function humanNames() {
-		return \Granada\Autobuild::pluralize('Timezone Test');
+		return \Granada\Builder\Autobuild::pluralize('Timezone Test');
 	}
 
 	/**
 	 * The columns used as part of the representation method
 	 */
 	public static function uniqueColumns() {
-		return array(
-		);
+		return [
+		];
 	}
 
 	/**
@@ -144,7 +144,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
      * The columns used as part of the representation method
      */
     public static function representationColumns() {
-            return array('id');
+            return ['id'];
     }
 
 	/**
@@ -152,9 +152,9 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * Override to ignore more
 	 */
 	public function ignoreDirtyForTimestamps() {
-		return array(
+		return [
 			'sort_order',
-		);
+		];
 	}
 
 	/**
@@ -164,16 +164,25 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @return boolean
 	 */
 	public static function hasAttribute($field) {
-		return array_key_exists($field, array(
-			'id' => true,
-			'datetime1' => true,
-			'datetime2' => true,
-			'datetime3' => true,
-			'datetime4' => true,
-			'datetime5' => true,
-			'date1' => true,
-			'time1' => true,
-		));
+		return array_key_exists($field, self::attributes());
+	}
+
+	/**
+	 * List of fields in the model
+	 *
+	 * @return string[]
+	 */
+	public static function attributes() {
+		return [
+			'id' => 'id',
+			'datetime1' => 'datetime1',
+			'datetime2' => 'datetime2',
+			'datetime3' => 'datetime3',
+			'datetime4' => 'datetime4',
+			'datetime5' => 'datetime5',
+			'date1' => 'date1',
+			'time1' => 'time1',
+		];
 	}
 
 	/**
@@ -198,52 +207,55 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @return array list of fields
 	 */
 	public function datefields() {
-		return array(
-			'datetime1' => array(
+		return [
+			'datetime1' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'none',
-			),
-			'datetime2' => array(
+			],
+			'datetime2' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'none',
 				'timezone_comparison_mode' => 'none',
-			),
-			'datetime3' => array(
+			],
+			'datetime3' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'site',
 				'timezone_comparison_mode' => 'none',
-			),
-			'datetime4' => array(
+			],
+			'datetime4' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'user',
-			),
-			'datetime5' => array(
+			],
+			'datetime5' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'site',
-			),
-			'date1' => array(
+			],
+			'date1' => [
 				'type' => 'date',
 				'format' => 'Y-m-d',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'none',
-			),
-			'time1' => array(
+			],
+			'time1' => [
 				'type' => 'time',
 				'format' => 'H:i:s',
 				'timezone_mode' => 'none',
 				'timezone_comparison_mode' => 'none',
-			),
-		);
+			],
+		];
 	}
 
+	public static function enum_options($field_name) {
+		return [];
+	}
 
 	/**
 	 * Should we delete this record for real or just flag as deleted?
@@ -256,37 +268,69 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
+	 * Get the model names for the lookup
+	 *
+	 * @param string name of the variable
+	 * @return string
+	 */
+	public static function refModel($varname) {
+		return false;
+	}
+
+	/**
 	 * Get the list of tags from the database comment
 	 * @param string $field the field name
 	 * @return string[] list of comment tags (_ prefixes)
 	 */
-	public static function field_tags($field) {
-		$tags = array(
-			'id' => array(
-			),
-			'datetime1' => array(
-			),
-			'datetime2' => array(
+	public function fieldTags($field) {
+		$tags = [
+			'id' => [
+			],
+			'datetime1' => [
+			],
+			'datetime2' => [
 				'_timezone_none',
-			),
-			'datetime3' => array(
+			],
+			'datetime3' => [
 				'_timezone_sitewide',
-			),
-			'datetime4' => array(
+			],
+			'datetime4' => [
 				'_timezone_compare_user',
-			),
-			'datetime5' => array(
+			],
+			'datetime5' => [
 				'_timezone_compare_sitewide',
-			),
-			'date1' => array(
-			),
-			'time1' => array(
-			),
-		);
+			],
+			'date1' => [
+			],
+			'time1' => [
+			],
+		];
 		if (!array_key_exists($field, $tags)) {
-			return array();
+			return [];
 		}
 		return $tags[$field];
+	}
+
+	/**
+	 * Get the human name of the field.
+	 * @param string $field the field name
+	 * @return string The field human name
+	 */
+	public function fieldHumanName($field) {
+		$items = [
+			'id' => 'Id',
+			'datetime1' => 'Datetime1',
+			'datetime2' => 'Datetime2',
+			'datetime3' => 'Datetime3',
+			'datetime4' => 'Datetime4',
+			'datetime5' => 'Datetime5',
+			'date1' => 'Date1',
+			'time1' => 'Time1',
+		];
+		if (!array_key_exists($field, $items)) {
+			return [];
+		}
+		return $items[$field];
 	}
 
 	/**
@@ -295,8 +339,8 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @param string $field the field name
 	 * @return string The field comment
 	 */
-	public static function field_help_text($field) {
-		$items = array(
+	public function fieldHelpText($field) {
+		$items = [
 			'id' => '',
 			'datetime1' => '',
 			'datetime2' => '',
@@ -305,19 +349,34 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'datetime5' => '',
 			'date1' => '',
 			'time1' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return array();
+			return [];
 		}
 		return $items[$field];
+	}
+
+	/**
+	 * Get the fields for admin list
+	 * @return string[] admin list fields
+	 */
+	public function adminFields() {
+		return [
+			'datetime1',
+			'datetime2',
+			'datetime3',
+			'datetime4',
+			'datetime5',
+			'date1',
+		];
 	}
 
 	/**
 	 * Get the fields for edit forms
 	 * @return string[] form fields
 	 */
-	public static function form_fields() {
-		return array(
+	public function formFields() {
+		return [
 			'datetime1',
 			'datetime2',
 			'datetime3',
@@ -325,7 +384,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'datetime5',
 			'date1',
 			'time1',
-		);
+		];
 	}
 
 	/**
@@ -333,8 +392,8 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_default_value($field) {
-		$items = array(
+	public function fieldDefaultValue($field) {
+		$items = [
 			'id' => '',
 			'datetime1' => '',
 			'datetime2' => '',
@@ -343,7 +402,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'datetime5' => '',
 			'date1' => '',
 			'time1' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -355,8 +414,8 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_length($field) {
-		$items = array(
+	public function fieldLength($field) {
+		$items = [
 			'id' => 11,
 			'datetime1' => 0,
 			'datetime2' => 0,
@@ -365,7 +424,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'datetime5' => 0,
 			'date1' => 0,
 			'time1' => 0,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -375,10 +434,10 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	/**
 	 * Get whether the field is required
 	 * @param string $field
-	 * @return integer
+	 * @return boolean
 	 */
-	public static function field_is_required($field) {
-		$items = array(
+	public function fieldIsRequired($field) {
+		$items = [
 			'id' => false,
 			'datetime1' => false,
 			'datetime2' => false,
@@ -387,9 +446,9 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'datetime5' => false,
 			'date1' => false,
 			'time1' => false,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return 0;
+			return false;
 		}
 		return $items[$field];
 	}

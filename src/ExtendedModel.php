@@ -17,11 +17,12 @@ namespace Granada\Builder;
  * @method string refModel(string $column) The relevant model the field is linked to with foreign key
  * @method string getNamespace() The name of the model namespace
  * @method string getModelname() The relative name of the model
+ * @method boolean isNestedSet() Is this model a nested set?
  * @static boolean hasAttribute(string $field) Does this model have this attribute
  * @static mixed model() The starting point for all queries
  *
  */
-class ExtendedModel extends \Granada\Model {
+abstract class ExtendedModel extends \Granada\Model {
 
     public function beforeSave() {
     }
@@ -114,8 +115,10 @@ class ExtendedModel extends \Granada\Model {
         }
         // Clean data to correct types for json output etc
         switch ($this->fieldType($property)) {
+            case 'bool':
             case 'boolean':
                 return $value ? true : false;
+            case 'reference':
             case 'integer':
                 return intval($value);
             default:
@@ -287,9 +290,11 @@ class ExtendedModel extends \Granada\Model {
             }
             $this->beforeSaveNew();
         }
+        $this->beforeSaveNestedSet();
         $this->beforeSave();
         parent::save($ignore);
         $this->reload(); // Update all references and changed ids take effect
+        $this->afterSaveNestedSet();
         $this->afterSave();
         if ($isnew) {
             $this->afterSaveNew();
@@ -303,6 +308,7 @@ class ExtendedModel extends \Granada\Model {
      * @throws \PDOException
      */
     public function delete($for_real = false) {
+        $this->beforeDeleteNestedSet();
         $this->beforeDelete();
         if ($this->fakeDelete() && !$for_real) {
             $this->is_deleted = true;
@@ -310,6 +316,7 @@ class ExtendedModel extends \Granada\Model {
         } else {
             $success = parent::delete();
         }
+        $this->afterDeleteNestedSet();
         $this->afterDelete();
         return $success;
     }
@@ -410,5 +417,488 @@ class ExtendedModel extends \Granada\Model {
 
         // Passed all the tests
         return true;
+    }
+
+    /**
+     * Nested Set functions
+     * To enable, create four integer fields in the table:
+     * root
+     * level
+     * lft
+     * rgt
+     */
+    /**
+     * Get the top level parent to add new elements to.
+     * Override to add extra parameters
+     *
+     * @return self
+     */
+    public function findTopLevelParent() {
+        $modelname = get_class($this);
+        $filter = $modelname::where('level', 1)->where_not_equal('root', -1)->order_by_asc('id');
+        // Search through potential references to other models, if defined
+
+        $relations = $modelname::topLevelIdentifierFields();
+        foreach ($relations as $relation) {
+            if ($this->$relation) {
+                $filter = $filter->where($relation, $this->$relation);
+            }
+        }
+        $parent = $filter->find_one();
+        return $parent;
+    }
+
+    /**
+     * List of fields that are required to match to identify the parent for this group
+     * e.g. for links to another item. ArticleComments link to Articles
+     *
+     * @return string[]
+     */
+    public function topLevelIdentifierFields() {
+        return array();
+    }
+
+    /**
+     * Called just before the model is saved.
+     * OVerride to have model-specific code.
+     */
+    public function beforeSaveNestedSet() {
+        if (!$this->isNestedSet()) {
+            return;
+        }
+        if ($this->is_new() && $this->lft == 0) {
+            // Add it to a new root
+            $this->lft = 1;
+            $this->rgt = 2;
+            $this->level = 1;
+            $this->root = -1;
+
+            $parent = $this->findTopLevelParent();
+            if (!$parent) {
+                $parent = self::create(array(
+                    'name' => 'ROOT',
+                    'lft' => 1,
+                    'rgt' => 2,
+                    'level' => 1,
+                    'root' => -2,
+                ));
+                foreach ($this->copyFieldsForRoot() as $field) {
+                    $parent->$field = $this->$field;
+                }
+                $parent->save();
+            }
+            // We add this item to the parent root in afterSave
+        }
+        // Ensure the submodel identifier of this nested set does not change from the root parent
+        if ($this->root > 0) {
+            $thisrootparent = $this->model()->where('id', $this->root)->find_one();
+            // Force identifier field to be the same as root
+            foreach ($this->copyFieldsForRoot() as $fieldname) {
+                $this->$fieldname = $thisrootparent->$fieldname;
+            }
+        }
+    }
+
+    /**
+     * List of fields we need to copy for nested set root elements
+     *
+     * @return string[]
+     */
+    public function copyFieldsForRoot() {
+        return array();
+    }
+
+    /**
+     * Called just after the model is saved.
+     * OVerride to have model-specific code.
+     */
+    public function afterSaveNestedSet() {
+        if (!$this->isNestedSet()) {
+            return;
+        }
+        if ($this->root == -1) {
+            // New roots have to have the root set to the id
+            $parent = $this->findTopLevelParent();
+            if (!$parent) {
+                throw new \Exception('Could not find top level parent');
+            }
+            $parent->append($this);
+        } else if ($this->root == -2) {
+            $this->root = $this->id;
+            $this->save();
+        }
+    }
+
+    public function beforeDeleteNestedSet() {
+        if (!$this->isNestedSet()) {
+            return;
+        }
+        // Also delete all children
+        \Granada\ORM::raw_execute('DELETE FROM ' . $this->tableName() . ' WHERE root=:root AND lft>:lft AND rgt<:rgt', array(
+            ':root' => $this->root,
+            ':lft' => $this->lft,
+            ':rgt' => $this->rgt,
+        ));
+        \Granada\ORM::clear_cache();
+    }
+
+    public function afterDeleteNestedSet() {
+        if (!$this->isNestedSet()) {
+            return;
+        }
+        // Repair the hole
+        $holesize = ($this->rgt - $this->lft) + 1;
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET lft=lft-' . $holesize . ' WHERE root=:root AND lft>:lft', array(
+            ':root' => $this->root,
+            ':lft' => $this->lft,
+        ));
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET rgt=rgt-' . $holesize . ' WHERE root=:root AND rgt>:rgt', array(
+            ':root' => $this->root,
+            ':rgt' => $this->lft,
+        ));
+        \Granada\ORM::clear_cache();
+    }
+
+    public function num_descendants() {
+        $descendants = ($this->rgt - $this->lft - 1) / 2;
+
+        return $descendants;
+    }
+
+    /**
+     * Get query parameters to get all descendants
+     *
+     * Use as $descendants = $item->descendants()->find_many();
+     *
+     * @param integer $depth
+     * @return self
+     */
+    public function descendants($depth = NULL) {
+        if ($depth) {
+            return $this->model()->where('root', $this->root)
+                ->where_gt('lft', $this->lft)
+                ->where_lt('rgt', $this->rgt)
+                ->where_lte('level', $this->level + $depth)
+                ->order_by_asc('lft');
+        }
+
+        return $this->model()->where('root', $this->root)
+            ->where_gt('lft', $this->lft)
+            ->where_lt('rgt', $this->rgt)
+            ->order_by_asc('lft');
+    }
+
+    /**
+     * Add queries to get the immediate childres on the current item
+     *
+     * Use as
+     *
+     * $children = $item->children()->find_many();
+     *
+     * @return self
+     */
+    public function children() {
+        return $this->descendants(1);
+    }
+
+    /**
+     * Add queries to get the ancestors for the current node
+     *
+     * Use as
+     *
+     * $ancestors = $item->ancestors()->find_many();
+     *
+     * @param integer $depth the number of levels of ancestors to return
+     * @return {{modelname}}
+     */
+    public function ancestors($depth = null) {
+        if ($depth) {
+            return $this->model()->where('root', $this->root)
+                ->where_lt('lft', $this->lft)
+                ->where_gt('rgt', $this->rgt)
+                ->where_gte('level', $this->level - $depth)
+                ->order_by_desc('lft');
+        }
+
+        return $this->model()->where('root', $this->root)
+            ->where_lt('lft', $this->lft)
+            ->where_gt('rgt', $this->rgt)
+            ->order_by_desc('lft');
+    }
+
+    /**
+     * Add query to get all root nodes
+     *
+     * Use as
+     *
+     * $roots = {{modelname}}::roots()->find_many();
+     *
+     * @return {{modelname}}
+     */
+    public function roots() {
+        return $this->model()->where('root', $this->root)
+            ->where('lft', 1);
+    }
+
+    /**
+     * Add query to get the parent of the current node
+     *
+     * Use as
+     *
+     * $parent = $item->getParent()->find_one();
+     *
+     * @return {{modelname}}
+     */
+    public function getParent() {
+        return $this->ancestors(1);
+    }
+
+    /**
+     * Add query to get the previous sibling of the current node
+     *
+     * Use as
+     *
+     * $previous = $item->previous()->find_one();
+     *
+     * @return {{modelname}}
+     */
+    public function previous() {
+        return $this->model()->where('root', $this->root)
+            ->where('rgt', $this->lft - 1);
+    }
+
+    /**
+     * Add query to get the next sibling of the current node
+     *
+     * Use as
+     *
+     * $next = $item->next()->find_one();
+     *
+     * @return {{modelname}}
+     */
+    public function next() {
+        return $this->model()->where('root', $this->root)
+            ->where('lft', $this->rgt + 1);
+    }
+
+    /**
+     * Prepends item to existing node as first child.
+     *
+     * @param {{modelname}} $item the item to insert.
+     * @return boolean whether the prepending succeeds.
+     */
+    public function prepend($item) {
+        return $item->moveFirst($this);
+    }
+
+    /**
+     * Appends item to existing node as last child.
+     *
+     * @param {{modelname}} $item the item to insert.
+     * @return boolean whether the appending succeeds.
+     */
+    public function append($item) {
+        return $item->moveLast($this);
+    }
+
+    /**
+     * Appends item to existing node as the previous sibling
+     *
+     * @param {{modelname}} $item the item to insert.
+     * @return boolean whether the appending succeeds.
+     */
+    public function insertBefore($item) {
+        $item->moveBefore($this);
+    }
+
+    /**
+     * Appends item to existing node as the next sibling
+     *
+     * @param {{modelname}} $item the item to insert.
+     * @return boolean whether the appending succeeds.
+     */
+    public function insertAfter($item) {
+        return $item->moveAfter($this);
+    }
+
+    /**
+     * Moves the current node to the previous sibling of the item
+     *
+     * @param {{modelname}} $item the item to move before
+     * @return boolean whether the move succeeds.
+     */
+    public function moveBefore($item) {
+        if ($item->root == $item->id) {
+            // Special case - root element
+            $this->lft = 1;
+            $this->rgt = 2;
+            $this->level = 1;
+            $this->root = $this->id;
+            $this->save();
+            return;
+        }
+        $this->moveTo($item->lft, $item->level, $item->root);
+    }
+
+    /**
+     * Moves the current node to the next sibling of the item
+     *
+     * @param {{modelname}} $item the item to move after
+     * @return boolean whether the move succeeds.
+     */
+    public function moveAfter($item) {
+        if ($item->root == $item->id) {
+            // Special case - root element
+            $this->lft = 1;
+            $this->rgt = 2;
+            $this->level = 1;
+            $this->root = $this->id;
+            $this->save();
+            return;
+        }
+        $this->moveTo($item->rgt + 1, $item->level, $item->root);
+    }
+
+    /**
+     * Moves the current node to the first child of the item
+     *
+     * @param {{modelname}} $item the item to move before
+     * @return boolean whether the appending succeeds.
+     */
+    public function moveFirst($item) {
+        $this->moveTo($item->lft + 1, $item->level + 1, $item->root);
+        $item->reload();
+    }
+
+    /**
+     * Moves the current node to the last child of the item
+     *
+     * @param {{modelname}} $item the item to move before
+     * @return boolean whether the appending succeeds.
+     */
+    public function moveLast($item) {
+        $this->moveTo($item->rgt, $item->level + 1, $item->root);
+        $item->reload();
+    }
+
+    public function moveTo($newpos, $newlevel, $newroot) {
+        $this->reload();
+
+        $width = ($this->rgt - $this->lft) + 1;
+        $distance = $newpos - $this->lft;
+        $tmppos = $this->lft;
+        $levelchange = $newlevel - $this->level;
+
+        // backwards movement must account for new space, but not when moving between roots
+        if ($this->root == $newroot) {
+            if ($distance < 0) {
+                $distance -= $width;
+                $tmppos += $width;
+            }
+        }
+
+        // Make room to fit the tree where we want to put it
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET lft=lft+' . $width . ' WHERE root=:root AND lft>=:lft', array(
+            ':root' => $newroot,
+            ':lft' => $newpos,
+        ));
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET rgt=rgt+' . $width . ' WHERE root=:root AND rgt>=:rgt', array(
+            ':root' => $newroot,
+            ':rgt' => $newpos,
+        ));
+
+        // Move the tree
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET level=level+:level, lft=lft+' . $distance . ', rgt=rgt+' . $distance . ', root=:newroot WHERE root=:root AND lft>=:lft AND rgt<:rgt', array(
+            ':root' => $this->root,
+            ':newroot' => $newroot,
+            ':lft' => $tmppos,
+            ':rgt' => $tmppos + $width,
+            ':level' => $levelchange,
+        ));
+
+        // Repair the hole in the original tree
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET lft=lft-' . $width . ' WHERE root=:root AND lft>:lft', array(
+            ':root' => $this->root,
+            ':lft' => $this->rgt,
+        ));
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET rgt=rgt-' . $width . ' WHERE root=:root AND rgt>:rgt', array(
+            ':root' => $this->root,
+            ':rgt' => $this->rgt,
+        ));
+
+        \Granada\ORM::clear_cache();
+        $this->reload();
+    }
+
+    /**
+     * Remove the current node and its children from the current tree and make another tree with this node as the root
+     *
+     * @return boolean whether the appending succeeds.
+     */
+    public function makeRoot() {
+        // Change root of all descendants
+        // Change lft and rgt by the offset
+        $offset = $this->lft - 1;
+        $leveloffset = $this->level - 1;
+        $oldroot = $this->root;
+        $oldlft = $this->lft;
+
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET level=level-' . $leveloffset . ', lft=lft-' . $offset . ', rgt=rgt-' . $offset . ', root=:id WHERE root=:root AND lft>=:lft AND rgt<=:rgt', array(
+            ':root' => $this->root,
+            ':id' => $this->id,
+            ':lft' => $this->lft,
+            ':rgt' => $this->rgt,
+        ));
+
+        $this->reload();
+
+        // Repair the hole in the original tree
+        $holesize = ($this->rgt - $this->lft) + 1;
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET lft=lft-' . $holesize . ' WHERE root=:root AND lft>:lft', array(
+            ':root' => $oldroot,
+            ':lft' => $oldlft,
+        ));
+        \Granada\ORM::raw_execute('UPDATE ' . $this->tableName() . ' SET rgt=rgt-' . $holesize . ' WHERE root=:root AND rgt>:rgt', array(
+            ':root' => $oldroot,
+            ':rgt' => $oldlft,
+        ));
+
+        \Granada\ORM::clear_cache();
+    }
+
+    /**
+     * Is the current node a descendant of the named item
+     * @return boolean
+     */
+    public function isDescendantOf($item) {
+        if ($this->root != $item->root) {
+            // Not of the same root
+            return false;
+        }
+        if ($this->lft <= $item->lft) {
+            // Item is me or before me
+            return false;
+        }
+        if ($this->rgt >= $item->rgt) {
+            // Item is me or after me
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Is the current node a leaf node
+     * @return boolean
+     */
+    public function isLeaf() {
+        return ($this->rgt == ($this->lft + 1));
+    }
+
+    /**
+     * Is the current node a root node
+     * @return boolean
+     */
+    public function isRoot() {
+        return ($this->lft == 1);
     }
 }

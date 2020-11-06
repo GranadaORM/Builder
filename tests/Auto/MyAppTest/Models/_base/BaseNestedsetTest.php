@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This is the base model class for the database table 'manufactor'
+ * This is the base model class for the database table 'nestedset_test'
  *
  * Do not modify this file, it is overwritten via the db2model script
- * If any changes are required, override them in the 'MyAppTest\Manufactor' class.
+ * If any changes are required, override them in the 'MyAppTest\NestedsetTest' class.
  */
 
 namespace MyAppTest;
@@ -12,32 +12,23 @@ namespace MyAppTest;
 /**
  * @property integer $id
  * @property string $name
- * @property \MyAppTest\Car[] $cars
+ * @property integer $root
+ * @property integer $level
+ * @property integer $lft
+ * @property integer $rgt
  *
- * @method \MyAppTest\Manufactor save(boolean $ignore = false) Save and reload the model, optionally ignoring existing id (Use INSERT ON DUPLICATE KEY UPDATE query).
+ * @method \MyAppTest\NestedsetTest save(boolean $ignore = false) Save and reload the model, optionally ignoring existing id (Use INSERT ON DUPLICATE KEY UPDATE query).
  */
-abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
-    public static $_table = 'manufactor';
+abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
+    public static $_table = 'nestedset_test';
 
 	/**
 	 * Starting point for all queries
-	 * @return \MyAppTest\QueryManufactor
+	 * @return \MyAppTest\QueryNestedsetTest
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\Manufactor');
+		return \Granada\Granada::factory('MyAppTest\NestedsetTest');
 	}
-
-    public function cars() {
-        return $this->has_many('MyAppTest\Car', 'manufactor_id')->defaultFilter()->order_by_expr(\MyAppTest\Car::defaultOrder());
-    }
-
-    /**
-     * Get the field name of the Car that links back to this Manufactor
-     * @return string
-     */
-    public function cars_refVar() {
-            return 'manufactor_id';
-    }
 
 	/**
 	 * @return string The current namespace
@@ -50,7 +41,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return string The current model name
 	 */
 	public function getModelname() {
-		return 'Manufactor';
+		return 'NestedsetTest';
 	}
 
 	/**
@@ -62,6 +53,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$fields = [
 		'id' => 'integer',
 		'name' => 'string',
+		'root' => 'integer',
+		'level' => 'integer',
+		'lft' => 'integer',
+		'rgt' => 'integer',
 		];
 		if (!array_key_exists($field_name, $fields)) {
 			return false;
@@ -75,7 +70,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return string Table name
 	 */
 	public function tableName() {
-		return 'manufactor';
+		return 'nestedset_test';
 	}
 
 	/**
@@ -84,7 +79,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function humanName() {
-		return 'Manufactor';
+		return 'Nestedset Test';
 	}
 
 	/**
@@ -93,7 +88,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function humanNames() {
-		return \Granada\Builder\Autobuild::pluralize('Manufactor');
+		return \Granada\Builder\Autobuild::pluralize('Nestedset Test');
 	}
 
 	/**
@@ -109,7 +104,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return boolean
 	 */
 	public static function isNestedSet() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -117,7 +112,7 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function defaultOrder() {
-		return 'name';
+		return 'root,lft';
 	}
 
 	/**
@@ -170,6 +165,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		return [
 			'id' => 'id',
 			'name' => 'name',
+			'root' => 'root',
+			'level' => 'level',
+			'lft' => 'lft',
+			'rgt' => 'rgt',
 		];
 	}
 
@@ -178,11 +177,11 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * Array has the property name as the keys
 	 *
 	 * @param array $data
-	 * @return \MyAppTest\Manufactor
+	 * @return \MyAppTest\NestedsetTest
 	 */
 	public function setAttributes($data) {
 		foreach ($data as $key => $val) {
-			if (\MyAppTest\Manufactor::hasAttribute($key) && $this->{$key} !== $val) {
+			if (\MyAppTest\NestedsetTest::hasAttribute($key) && $this->{$key} !== $val) {
 				$this->{$key} = $val;
 			}
 		}
@@ -234,6 +233,14 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 			],
 			'name' => [
 			],
+			'root' => [
+			],
+			'level' => [
+			],
+			'lft' => [
+			],
+			'rgt' => [
+			],
 		];
 		if (!array_key_exists($field, $tags)) {
 			return [];
@@ -250,6 +257,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$items = [
 			'id' => 'Id',
 			'name' => 'Name',
+			'root' => 'Root',
+			'level' => 'Level',
+			'lft' => 'Lft',
+			'rgt' => 'Rgt',
 		];
 		if (!array_key_exists($field, $items)) {
 			return [];
@@ -267,6 +278,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$items = [
 			'id' => '',
 			'name' => '',
+			'root' => '',
+			'level' => '',
+			'lft' => '',
+			'rgt' => '',
 		];
 		if (!array_key_exists($field, $items)) {
 			return [];
@@ -303,6 +318,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$items = [
 			'id' => '',
 			'name' => '',
+			'root' => '',
+			'level' => '',
+			'lft' => '',
+			'rgt' => '',
 		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
@@ -319,6 +338,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$items = [
 			'id' => 11,
 			'name' => 190,
+			'root' => 11,
+			'level' => 11,
+			'lft' => 11,
+			'rgt' => 11,
 		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
@@ -335,6 +358,10 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 		$items = [
 			'id' => false,
 			'name' => true,
+			'root' => true,
+			'level' => true,
+			'lft' => true,
+			'rgt' => true,
 		];
 		if (!array_key_exists($field, $items)) {
 			return false;

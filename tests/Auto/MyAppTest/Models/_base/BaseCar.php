@@ -79,18 +79,18 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public function fieldType($field_name) {
-		$fields = array(
-			'id' => 'integer',
-			'name' => 'string',
-			'manufactor_id' => 'integer',
-			'owner_id' => 'integer',
-			'enabled' => 'boolean',
-			'stealth' => 'boolean',
-			'is_deleted' => 'boolean',
-			'sort_order' => 'integer',
-			'created_at' => 'datetime',
-			'updated_at' => 'datetime',
-		);
+		$fields = [
+		'id' => 'integer',
+		'name' => 'string',
+		'manufactor_id' => 'reference',
+		'owner_id' => 'reference',
+		'enabled' => 'bool',
+		'stealth' => 'bool',
+		'is_deleted' => 'bool',
+		'sort_order' => 'integer',
+		'created_at' => 'datetime',
+		'updated_at' => 'datetime',
+		];
 		if (!array_key_exists($field_name, $fields)) {
 			return false;
 		}
@@ -121,15 +121,15 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function humanNames() {
-		return \Granada\Autobuild::pluralize('Car');
+		return \Granada\Builder\Autobuild::pluralize('Car');
 	}
 
 	/**
 	 * The columns used as part of the representation method
 	 */
 	public static function uniqueColumns() {
-		return array(
-		);
+		return [
+		];
 	}
 
 	/**
@@ -166,7 +166,7 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
      * The columns used as part of the representation method
      */
     public static function representationColumns() {
-            return array('name');
+            return ['name'];
     }
 
 	/**
@@ -174,9 +174,9 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * Override to ignore more
 	 */
 	public function ignoreDirtyForTimestamps() {
-		return array(
+		return [
 			'sort_order',
-		);
+		];
 	}
 
 	/**
@@ -186,18 +186,27 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @return boolean
 	 */
 	public static function hasAttribute($field) {
-		return array_key_exists($field, array(
-			'id' => true,
-			'name' => true,
-			'manufactor_id' => true,
-			'owner_id' => true,
-			'enabled' => true,
-			'stealth' => true,
-			'is_deleted' => true,
-			'sort_order' => true,
-			'created_at' => true,
-			'updated_at' => true,
-		));
+		return array_key_exists($field, self::attributes());
+	}
+
+	/**
+	 * List of fields in the model
+	 *
+	 * @return string[]
+	 */
+	public static function attributes() {
+		return [
+			'id' => 'id',
+			'name' => 'name',
+			'manufactor_id' => 'manufactor_id',
+			'owner_id' => 'owner_id',
+			'enabled' => 'enabled',
+			'stealth' => 'stealth',
+			'is_deleted' => 'is_deleted',
+			'sort_order' => 'sort_order',
+			'created_at' => 'created_at',
+			'updated_at' => 'updated_at',
+		];
 	}
 
 	/**
@@ -222,22 +231,25 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @return array list of fields
 	 */
 	public function datefields() {
-		return array(
-			'created_at' => array(
+		return [
+			'created_at' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'none',
-			),
-			'updated_at' => array(
+			],
+			'updated_at' => [
 				'type' => 'datetime',
 				'format' => 'Y-m-d H:i:s',
 				'timezone_mode' => 'user',
 				'timezone_comparison_mode' => 'none',
-			),
-		);
+			],
+		];
 	}
 
+	public static function enum_options($field_name) {
+		return [];
+	}
 
 	/**
 	 * Should we delete this record for real or just flag as deleted?
@@ -250,37 +262,77 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
+	 * Get the model names for the lookup
+	 *
+	 * @param string name of the variable
+	 * @return string
+	 */
+	public static function refModel($varname) {
+		if ($varname == 'manufactor_id') {
+			return '\MyAppTest\Manufactor';
+		}
+		if ($varname == 'owner_id') {
+			return '\MyAppTest\Owner';
+		}
+		return false;
+	}
+
+	/**
 	 * Get the list of tags from the database comment
 	 * @param string $field the field name
 	 * @return string[] list of comment tags (_ prefixes)
 	 */
-	public static function field_tags($field) {
-		$tags = array(
-			'id' => array(
-			),
-			'name' => array(
-			),
-			'manufactor_id' => array(
-			),
-			'owner_id' => array(
-			),
-			'enabled' => array(
-			),
-			'stealth' => array(
-			),
-			'is_deleted' => array(
-			),
-			'sort_order' => array(
-			),
-			'created_at' => array(
-			),
-			'updated_at' => array(
-			),
-		);
+	public function fieldTags($field) {
+		$tags = [
+			'id' => [
+			],
+			'name' => [
+			],
+			'manufactor_id' => [
+			],
+			'owner_id' => [
+			],
+			'enabled' => [
+			],
+			'stealth' => [
+			],
+			'is_deleted' => [
+			],
+			'sort_order' => [
+			],
+			'created_at' => [
+			],
+			'updated_at' => [
+			],
+		];
 		if (!array_key_exists($field, $tags)) {
-			return array();
+			return [];
 		}
 		return $tags[$field];
+	}
+
+	/**
+	 * Get the human name of the field.
+	 * @param string $field the field name
+	 * @return string The field human name
+	 */
+	public function fieldHumanName($field) {
+		$items = [
+			'id' => 'Id',
+			'name' => 'Name',
+			'manufactor_id' => 'Manufactor',
+			'owner_id' => 'Owner',
+			'enabled' => 'Enabled',
+			'stealth' => 'Stealth',
+			'is_deleted' => 'Is Deleted',
+			'sort_order' => 'Sort Order',
+			'created_at' => 'Created At',
+			'updated_at' => 'Updated At',
+		];
+		if (!array_key_exists($field, $items)) {
+			return [];
+		}
+		return $items[$field];
 	}
 
 	/**
@@ -289,8 +341,8 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @param string $field the field name
 	 * @return string The field comment
 	 */
-	public static function field_help_text($field) {
-		$items = array(
+	public function fieldHelpText($field) {
+		$items = [
 			'id' => '',
 			'name' => '',
 			'manufactor_id' => '',
@@ -301,29 +353,41 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 			'sort_order' => '',
 			'created_at' => '',
 			'updated_at' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return array();
+			return [];
 		}
 		return $items[$field];
 	}
 
 	/**
-	 * Get the fields for edit forms
-	 * @return string[] form fields
+	 * Get the fields for admin list
+	 * @return string[] admin list fields
 	 */
-	public static function form_fields() {
-		return array(
+	public function adminFields() {
+		return [
 			'name',
 			'manufactor_id',
 			'owner_id',
 			'enabled',
 			'stealth',
 			'is_deleted',
-			'sort_order',
-			'created_at',
-			'updated_at',
-		);
+		];
+	}
+
+	/**
+	 * Get the fields for edit forms
+	 * @return string[] form fields
+	 */
+	public function formFields() {
+		return [
+			'name',
+			'manufactor_id',
+			'owner_id',
+			'enabled',
+			'stealth',
+			'is_deleted',
+		];
 	}
 
 	/**
@@ -331,10 +395,10 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_default_value($field) {
-		$items = array(
+	public function fieldDefaultValue($field) {
+		$items = [
 			'id' => '',
-			'name' => 'XXXX',
+			'name' => '',
 			'manufactor_id' => '',
 			'owner_id' => '',
 			'enabled' => '1',
@@ -343,7 +407,7 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 			'sort_order' => '',
 			'created_at' => '',
 			'updated_at' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -355,8 +419,8 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_length($field) {
-		$items = array(
+	public function fieldLength($field) {
+		$items = [
 			'id' => 11,
 			'name' => 190,
 			'manufactor_id' => 11,
@@ -367,7 +431,7 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 			'sort_order' => 11,
 			'created_at' => 0,
 			'updated_at' => 0,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -377,10 +441,10 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	/**
 	 * Get whether the field is required
 	 * @param string $field
-	 * @return integer
+	 * @return boolean
 	 */
-	public static function field_is_required($field) {
-		$items = array(
+	public function fieldIsRequired($field) {
+		$items = [
 			'id' => false,
 			'name' => true,
 			'manufactor_id' => false,
@@ -391,9 +455,9 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 			'sort_order' => false,
 			'created_at' => false,
 			'updated_at' => false,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return 0;
+			return false;
 		}
 		return $items[$field];
 	}

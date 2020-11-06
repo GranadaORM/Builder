@@ -944,4 +944,203 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
 
         $this->assertSame($expectedSql, $actualSql);
     }
+
+    public function testNestedSetNew() {
+        $item = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 1',
+        ])->save();
+
+        $this->assertSame(2, $item->id);
+        $this->assertSame(1, $item->root);
+        $this->assertSame(2, $item->lft);
+        $this->assertSame(3, $item->rgt);
+
+        // Get auto-created ROOT
+        $root = $item->findTopLevelParent();
+        $this->assertSame(1, $root->id);
+        $this->assertSame('ROOT', $root->name);
+        $this->assertSame(1, $root->root);
+        $this->assertSame(1, $root->lft);
+        $this->assertSame(4, $root->rgt);
+
+        // Add another
+
+        $item2 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 2',
+        ])->save();
+
+        $item->reload();
+
+        $this->assertSame(1, $item2->root);
+        $this->assertSame(4, $item2->lft);
+        $this->assertSame(5, $item2->rgt);
+
+        $this->assertSame(2, $item->lft);
+        $this->assertSame(3, $item->rgt);
+    }
+
+    public function testNestedSetAddChild() {
+        $item1 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 1',
+        ])->save();
+
+        $item2 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 2',
+        ])->save();
+
+        $item3 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 3',
+        ])->save();
+
+        $item4 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 4',
+        ])->save();
+
+        $item1->append($item2);
+        $item1->append($item3);
+        $item1->prepend($item4);
+        $item1->reload();
+        $item2->reload();
+        $item3->reload();
+        $item4->reload();
+
+        $this->assertSame(2, $item1->lft);
+        $this->assertSame(3, $item4->lft);
+        $this->assertSame(4, $item4->rgt);
+        $this->assertSame(5, $item2->lft);
+        $this->assertSame(6, $item2->rgt);
+        $this->assertSame(7, $item3->lft);
+        $this->assertSame(8, $item3->rgt);
+        $this->assertSame(9, $item1->rgt);
+
+        $this->assertSame(2, $item1->level);
+        $this->assertSame(3, $item2->level);
+        $this->assertSame(3, $item3->level);
+        $this->assertSame(3, $item4->level);
+
+        // Move 3 to child of 4
+        $item4->append($item3);
+        $item1->reload();
+        $item2->reload();
+        $item3->reload();
+        $item4->reload();
+
+        $this->assertSame(2, $item1->lft);
+        $this->assertSame(3, $item4->lft);
+        $this->assertSame(4, $item3->lft);
+        $this->assertSame(5, $item3->rgt);
+        $this->assertSame(6, $item4->rgt);
+        $this->assertSame(7, $item2->lft);
+        $this->assertSame(8, $item2->rgt);
+        $this->assertSame(9, $item1->rgt);
+
+        $this->assertSame(2, $item1->level);
+        $this->assertSame(3, $item2->level);
+        $this->assertSame(4, $item3->level);
+        $this->assertSame(3, $item4->level);
+
+        $this->assertSame(true, $item2->isDescendantOf($item1));
+        $this->assertSame(false, $item1->isDescendantOf($item2));
+        $this->assertSame(true, $item3->isDescendantOf($item1));
+
+        $this->assertSame(true, $item3->isLeaf());
+        $this->assertSame(false, $item4->isLeaf());
+
+        // Get level 1 descendants of item 1
+        $descendants = $item1->descendants(1)->find_pairs();
+
+        $this->assertSame([
+            5 => 'Test 4',
+            3 => 'Test 2',
+        ], $descendants);
+
+        // Is the same with children
+        $children = $item1->children()->find_pairs();
+
+        $this->assertSame([
+            5 => 'Test 4',
+            3 => 'Test 2',
+        ], $children);
+
+        // Get all descendants of item 1
+        $descendants = $item1->descendants()->find_pairs();
+        $this->assertSame([
+            5 => 'Test 4',
+            4 => 'Test 3',
+            3 => 'Test 2',
+        ], $descendants);
+
+        $this->assertSame(3, $item1->num_descendants());
+        $this->assertSame(0, $item2->num_descendants());
+        $this->assertSame(0, $item3->num_descendants());
+        $this->assertSame(1, $item4->num_descendants());
+
+        // Get one level ancestor of item 3
+        $ancestors = $item3->ancestors(1)->find_pairs();
+        $this->assertSame([
+            5 => 'Test 4',
+        ], $ancestors);
+
+        // Get all ancestors of item 3
+        $ancestors = $item3->ancestors()->find_pairs();
+        $this->assertSame([
+            5 => 'Test 4',
+            2 => 'Test 1',
+            1 => 'ROOT',
+        ], $ancestors);
+
+        // Get parent of item 3
+        $parent = $item3->getParent()->find_one();
+        $this->assertSame('Test 4', $parent->name);
+
+        // Get root of item 3
+        $root = $item3->roots()->find_one();
+        $this->assertSame('ROOT', $root->name);
+
+        // Get previous sibling of item 2
+        $previous = $item2->previous()->find_one();
+        $this->assertSame('Test 4', $previous->name);
+
+        // Get next sibling of item 4
+        $previous = $item4->next()->find_one();
+        $this->assertSame('Test 2', $previous->name);
+    }
+
+    public function testNestedSetInsertBefore() {
+        $item1 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 1',
+        ])->save();
+
+        $item2 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 2',
+        ])->save();
+
+        $item1->insertBefore($item2);
+        $item1->reload();
+        $item2->reload();
+
+        $this->assertSame(2, $item2->lft);
+        $this->assertSame(3, $item2->rgt);
+        $this->assertSame(4, $item1->lft);
+        $this->assertSame(5, $item1->rgt);
+    }
+
+    public function testNestedSetInsertAfter() {
+        $item1 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 1',
+        ])->save();
+
+        $item2 = \MyAppTest\NestedsetTest::create([
+            'name' => 'Test 2',
+        ])->save();
+
+        $item1->insertAfter($item2);
+        $item1->reload();
+        $item2->reload();
+
+        $this->assertSame(2, $item1->lft);
+        $this->assertSame(3, $item1->rgt);
+        $this->assertSame(4, $item2->lft);
+        $this->assertSame(5, $item2->rgt);
+    }
 }

@@ -37,6 +37,15 @@ CREATE TABLE car_part (
     FOREIGN KEY (part_id) REFERENCES part (id)
 );
 
+CREATE TABLE nestedset_test (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    root INTEGER,
+    level INTEGER,
+    lft INTEGER,
+    rgt INTEGER
+);
+
 CREATE TABLE timezone_test (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     datetime1 DATETIME,

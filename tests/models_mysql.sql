@@ -93,6 +93,17 @@ INSERT INTO `part` (`id`, `name`) VALUES
 (4,	'Part4'),
 (5,	'Part5');
 
+DROP TABLE IF EXISTS `nestedset_test`;
+CREATE TABLE `nestedset_test` (
+  `id` int(11) NOT NULL,
+  `name` varchar(190) NOT NULL,
+  `root` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `timezone_test`;
 CREATE TABLE `timezone_test` (
   `id` int(11) NOT NULL,

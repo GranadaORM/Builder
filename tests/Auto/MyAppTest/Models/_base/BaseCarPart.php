@@ -57,11 +57,11 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public function fieldType($field_name) {
-		$fields = array(
-			'id' => 'integer',
-			'car_id' => 'integer',
-			'part_id' => 'integer',
-		);
+		$fields = [
+		'id' => 'integer',
+		'car_id' => 'reference',
+		'part_id' => 'reference',
+		];
 		if (!array_key_exists($field_name, $fields)) {
 			return false;
 		}
@@ -92,15 +92,15 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @return string
 	 */
 	public static function humanNames() {
-		return \Granada\Autobuild::pluralize('Car Part');
+		return \Granada\Builder\Autobuild::pluralize('Car Part');
 	}
 
 	/**
 	 * The columns used as part of the representation method
 	 */
 	public static function uniqueColumns() {
-		return array(
-		);
+		return [
+		];
 	}
 
 	/**
@@ -137,7 +137,7 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
      * The columns used as part of the representation method
      */
     public static function representationColumns() {
-            return array('id');
+            return ['id'];
     }
 
 	/**
@@ -145,9 +145,9 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * Override to ignore more
 	 */
 	public function ignoreDirtyForTimestamps() {
-		return array(
+		return [
 			'sort_order',
-		);
+		];
 	}
 
 	/**
@@ -157,11 +157,20 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @return boolean
 	 */
 	public static function hasAttribute($field) {
-		return array_key_exists($field, array(
-			'id' => true,
-			'car_id' => true,
-			'part_id' => true,
-		));
+		return array_key_exists($field, self::attributes());
+	}
+
+	/**
+	 * List of fields in the model
+	 *
+	 * @return string[]
+	 */
+	public static function attributes() {
+		return [
+			'id' => 'id',
+			'car_id' => 'car_id',
+			'part_id' => 'part_id',
+		];
 	}
 
 	/**
@@ -186,10 +195,13 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @return array list of fields
 	 */
 	public function datefields() {
-		return array(
-		);
+		return [
+		];
 	}
 
+	public static function enum_options($field_name) {
+		return [];
+	}
 
 	/**
 	 * Should we delete this record for real or just flag as deleted?
@@ -202,23 +214,56 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
+	 * Get the model names for the lookup
+	 *
+	 * @param string name of the variable
+	 * @return string
+	 */
+	public static function refModel($varname) {
+		if ($varname == 'car_id') {
+			return '\MyAppTest\Car';
+		}
+		if ($varname == 'part_id') {
+			return '\MyAppTest\Part';
+		}
+		return false;
+	}
+
+	/**
 	 * Get the list of tags from the database comment
 	 * @param string $field the field name
 	 * @return string[] list of comment tags (_ prefixes)
 	 */
-	public static function field_tags($field) {
-		$tags = array(
-			'id' => array(
-			),
-			'car_id' => array(
-			),
-			'part_id' => array(
-			),
-		);
+	public function fieldTags($field) {
+		$tags = [
+			'id' => [
+			],
+			'car_id' => [
+			],
+			'part_id' => [
+			],
+		];
 		if (!array_key_exists($field, $tags)) {
-			return array();
+			return [];
 		}
 		return $tags[$field];
+	}
+
+	/**
+	 * Get the human name of the field.
+	 * @param string $field the field name
+	 * @return string The field human name
+	 */
+	public function fieldHumanName($field) {
+		$items = [
+			'id' => 'Id',
+			'car_id' => 'Car',
+			'part_id' => 'Part',
+		];
+		if (!array_key_exists($field, $items)) {
+			return [];
+		}
+		return $items[$field];
 	}
 
 	/**
@@ -227,27 +272,38 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @param string $field the field name
 	 * @return string The field comment
 	 */
-	public static function field_help_text($field) {
-		$items = array(
+	public function fieldHelpText($field) {
+		$items = [
 			'id' => '',
 			'car_id' => '',
 			'part_id' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return array();
+			return [];
 		}
 		return $items[$field];
+	}
+
+	/**
+	 * Get the fields for admin list
+	 * @return string[] admin list fields
+	 */
+	public function adminFields() {
+		return [
+			'car_id',
+			'part_id',
+		];
 	}
 
 	/**
 	 * Get the fields for edit forms
 	 * @return string[] form fields
 	 */
-	public static function form_fields() {
-		return array(
+	public function formFields() {
+		return [
 			'car_id',
 			'part_id',
-		);
+		];
 	}
 
 	/**
@@ -255,12 +311,12 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_default_value($field) {
-		$items = array(
+	public function fieldDefaultValue($field) {
+		$items = [
 			'id' => '',
 			'car_id' => '',
 			'part_id' => '',
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -272,12 +328,12 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @param string $field
 	 * @return integer
 	 */
-	public static function field_length($field) {
-		$items = array(
+	public function fieldLength($field) {
+		$items = [
 			'id' => 11,
 			'car_id' => 11,
 			'part_id' => 11,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}
@@ -287,16 +343,16 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	/**
 	 * Get whether the field is required
 	 * @param string $field
-	 * @return integer
+	 * @return boolean
 	 */
-	public static function field_is_required($field) {
-		$items = array(
+	public function fieldIsRequired($field) {
+		$items = [
 			'id' => false,
 			'car_id' => false,
 			'part_id' => false,
-		);
+		];
 		if (!array_key_exists($field, $items)) {
-			return 0;
+			return false;
 		}
 		return $items[$field];
 	}
