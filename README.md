@@ -65,6 +65,8 @@ To make Granada models more useful, the following functions and features have be
 
 * __Pluralized and Singularized__ versions of the model name. Use ```humanName()``` to get "Person" and ```humanNames()``` to get "People"
 
+* __Nested Sets__ by adding integer fields of `root`, `level`, `lft` and `rgt` you can store trees of data, with functions to manage the hierarchy of the records in the table.
+
 ## Usage
 
 Here's some examples of how you can use the classes to interact with the database through Granada even easier.
