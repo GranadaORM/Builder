@@ -1,0 +1,487 @@
+<?php
+
+/**
+ * This is the base model class for the database table '{$tablename}'
+ *
+ * Do not modify this file, it is overwritten via the db2model script
+ * If any changes are required, override them in the '{$namespace}\{$modelname}' class.
+ */
+
+namespace {$namespace};
+
+/**
+{foreach $structure as $field}
+ * @property {$field->doctype} ${$field->name}
+{if ($field->type == 'json' || $field->type == 'serialize')}
+ * @property array ${$field->name}_decoded
+{/if}
+{if ($field->type == 'dob') || ($field->type == 'date') || ($field->type == 'datetime') || ($field->type == 'time')}
+ * @property \Cake\Chronos\Chronos ${$field->name}_chronos
+{/if}
+{/foreach}
+{foreach $belongsTo as $field}
+ * @property \{$field->namespace}\{$field->modelname} ${$field->arvarname}
+{/foreach}
+{foreach $hasMany as $field}
+ * @property \{$field->namespace}\{$field->modelname}[] ${$field->arvarname}
+{/foreach}
+ *
+ * @method \{$namespace}\{$modelname} save(boolean $ignore = false) Save and reload the model, optionally ignoring existing id (Use INSERT ON DUPLICATE KEY UPDATE query).
+ */
+abstract class Base{$modelname} extends {$modelToExtend} {
+    public static $_table = '{$tablename}';
+
+	/**
+	 * Starting point for all queries
+	 * @return \{$namespace}\Query{$modelname}
+	 */
+	public static function model() {
+		return \Granada\Granada::factory('{$namespace}\{$modelname}');
+	}
+
+{foreach $belongsTo as $field}
+    public function {$field->arvarname}() {
+        return $this->belongs_to('{$field->namespace}\{$field->modelname}', '{$field->varname}');
+    }
+
+{/foreach}
+{foreach $hasMany as $field}
+    public function {$field->arvarname}() {
+        return $this->has_many('{$field->namespace}\{$field->modelname}', '{$field->varname}')->defaultFilter()->order_by_expr(\{$field->namespace}\{$field->modelname}::defaultOrder());
+    }
+
+    /**
+     * Get the field name of the {$field->modelname} that links back to this {$modelname}
+     * @return string
+     */
+    public function {$field->arvarname}_refVar() {
+            return '{$field->varname}';
+    }
+
+{/foreach}
+	/**
+	 * @return string The current namespace
+	 */
+	public function getNamespace() {
+		return '{$namespace}';
+	}
+
+	/**
+	 * @return string The current model name
+	 */
+	public function getModelname() {
+		return '{$modelname}';
+	}
+
+	/**
+	 * Get the type of variable for the field
+	 * @var string $field_name
+	 * @return string
+	 */
+	public function fieldType($field_name) {
+		$fields = [
+{foreach $structure as $field}
+		'{$field->name}' => '{$field->type}',
+{/foreach}
+		];
+		if (!array_key_exists($field_name, $fields)) {
+			return false;
+		}
+		return $fields[$field_name];
+	}
+
+	/**
+	 * Get the database table name
+	 *
+	 * @return string Table name
+	 */
+	public function tableName() {
+		return '{$tablename}';
+	}
+
+	/**
+	 * Get the human-readable name for the model
+	 *
+	 * @return string
+	 */
+	public static function humanName() {
+		return '{$humanName}';
+	}
+
+	/**
+	 * Get the plural version of human-readable name for the model
+	 *
+	 * @return string
+	 */
+	public static function humanNames() {
+		return \Granada\Builder\Autobuild::pluralize('{$humanName}');
+	}
+
+	/**
+	 * The columns used as part of the representation method
+	 */
+	public static function uniqueColumns() {
+		return [
+{foreach $structure as $field}
+{if $field->unique}
+			'{$field->name}',
+{/if}
+{/foreach}
+		];
+	}
+
+	/**
+	 * Is this model a nestedSet ?
+	 * @return boolean
+	 */
+	public static function isNestedSet() {
+{if $nestedSet}
+		return true;
+{else}
+		return false;
+{/if}
+	}
+
+	/**
+	 * The column used as the main identifier for the model
+	 * @return string
+	 */
+	public static function defaultOrder() {
+{if $nestedSet}
+		return 'root,lft';
+{else}
+		return '{$defaultorder}';
+{/if}
+	}
+
+	/**
+	 * The column used as the main identifier for the model
+	 */
+	public static function primaryColumn() {
+		return '{$representation}';
+	}
+
+	/**
+	 * The value of the main identifier for the model
+	 */
+	public function representation() {
+		return $this->{$representation};
+	}
+
+    /**
+     * The columns used as part of the representation method
+     */
+    public static function representationColumns() {
+            return ['{$representation}'];
+    }
+
+	/**
+	 * Any fields listed in this array will not affect the updated_at and created_at timestamp fields on save
+	 * Override to ignore more
+	 */
+	public function ignoreDirtyForTimestamps() {
+		return [
+			'sort_order',
+		];
+	}
+
+	/**
+	 * Check that the model has a field name
+	 *
+	 * @var string $field
+	 * @return boolean
+	 */
+	public static function hasAttribute($field) {
+		return array_key_exists($field, self::attributes());
+	}
+
+	/**
+	 * List of fields in the model
+	 *
+	 * @return string[]
+	 */
+	public static function attributes() {
+		return [
+{foreach $structure as $field}
+			'{$field->name}' => '{$field->name}',
+{/foreach}
+		];
+	}
+
+	/**
+	 * Set attributes for an item in bulk
+	 * Array has the property name as the keys
+	 *
+	 * @param array $data
+	 * @return \{$namespace}\{$modelname}
+	 */
+	public function setAttributes($data) {
+		foreach ($data as $key => $val) {
+			if (\{$namespace}\{$modelname}::hasAttribute($key) && $this->$key !== $val) {
+				$this->$key = $val;
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Get list of date fields, used for timezone conversion
+	 *
+	 * @return array list of fields
+	 */
+	public function datefields() {
+		return [
+{foreach $structure as $field}
+{if $field->type == 'date'}
+			'{$field->name}' => [
+				'type' => 'date',
+				'format' => 'Y-m-d',
+				'timezone_mode' => '{$field->timezone_mode}',
+				'timezone_comparison_mode' => '{$field->timezone_comparison_mode}',
+			],
+{elseif $field->type == 'dob'}
+			'{$field->name}' => [
+				'type' => 'dob',
+				'format' => 'd/m/Y',
+				'timezone_mode' => '{$field->timezone_mode}',
+				'timezone_comparison_mode' => '{$field->timezone_comparison_mode}',
+			],
+{elseif $field->type == 'datetime'}
+			'{$field->name}' => [
+				'type' => 'datetime',
+				'format' => 'Y-m-d H:i:s',
+				'timezone_mode' => '{$field->timezone_mode}',
+				'timezone_comparison_mode' => '{$field->timezone_comparison_mode}',
+			],
+{elseif $field->type == 'time'}
+			'{$field->name}' => [
+				'type' => 'time',
+				'format' => 'H:i:s',
+				'timezone_mode' => '{$field->timezone_mode}',
+				'timezone_comparison_mode' => '{$field->timezone_comparison_mode}',
+			],
+{/if}
+{/foreach}
+		];
+	}
+
+	public static function enum_options($field_name) {
+{foreach $structure as $field}
+{if $field->type == 'enum'}
+		if ($field_name == '{$field->name}') {
+			return [
+			{foreach $field->options as $option}
+				'{$option}' => '{$option}',
+			{/foreach}
+			];
+		}
+
+{/if}
+{/foreach}
+		return [];
+	}
+
+	/**
+	 * Should we delete this record for real or just flag as deleted?
+	 * Uses the is_deleted field
+	 *
+	 * @return boolean
+	 */
+	public function fakeDelete() {
+{if $deleteForReal}
+		return false;
+{else}
+		return true;
+{/if}
+	}
+
+	/**
+	 * Get the model names for the lookup
+	 *
+	 * @param string name of the variable
+	 * @return string
+	 */
+	public static function refModel($varname) {
+{foreach $belongsTo as $field}
+		if ($varname == '{$field->varname}') {
+			return '\{$field->namespace}\{$field->modelname}';
+		}
+{/foreach}
+		return false;
+	}
+
+	/**
+	 * Get the list of tags from the database comment
+	 * @param string $field the field name
+	 * @return string[] list of comment tags (_ prefixes)
+	 */
+	public function fieldTags($field) {
+		$tags = [
+{foreach $structure as $field}
+			'{$field->name}' => [
+{foreach $field->comment_flags as $flag}
+				'{$flag}',
+{/foreach}
+			],
+{/foreach}
+		];
+		if (!array_key_exists($field, $tags)) {
+			return [];
+		}
+		return $tags[$field];
+	}
+
+	/**
+	 * Get the human name of the field
+	 * @param string $field the field name
+	 * @return string The field human name
+	 */
+	public function fieldHumanName($field) {
+		$items = [
+{foreach $structure as $field}
+			'{$field->name}' => '{$field->displayname}',
+{/foreach}
+		];
+		if (!array_key_exists($field, $items)) {
+			return [];
+		}
+		return $items[$field];
+	}
+
+	/**
+	 * Get the help text from the database comment.
+	 * It is basically the comment minus the tags (_ prefixes)
+	 * @param string $field the field name
+	 * @return string The field comment
+	 */
+	public function fieldHelpText($field) {
+		$items = [
+{foreach $structure as $field}
+			'{$field->name}' => '{$field->helptext}',
+{/foreach}
+		];
+		if (!array_key_exists($field, $items)) {
+			return [];
+		}
+		return $items[$field];
+	}
+
+	/**
+	 * Get the fields for admin list
+	 * @return string[] admin list fields
+	 */
+	public function adminFields() {
+		return [
+{var $continue = false}
+{var $fieldcounter = 0}
+{foreach $structure as $field}
+{if $field->type == 'text'}
+{var $continue = true}
+{/if}
+{if $field->type == 'richtext'}
+{var $continue = true}
+{/if}
+{if $field->type == 'pagebuilder'}
+{var $continue = true}
+{/if}
+{if $field->type == 'formbuilder'}
+{var $continue = true}
+{/if}
+{if $field->type == 'html'}
+{var $continue = true}
+{/if}
+{if $field->type == 'css'}
+{var $continue = true}
+{/if}
+{if $field->type == 'js'}
+{var $continue = true}
+{/if}
+{if $field->type == 'json'}
+{var $continue = true}
+{/if}
+{if $field->type == 'jsonld'}
+{var $continue = true}
+{/if}
+{if $field->type == 'serialize'}
+{var $continue = true}
+{/if}
+{if $field->hidden_in_forms}
+{var $continue = true}
+{/if}
+{if $continue}
+{var $continue = false}
+{else}
+{var $fieldcounter = $fieldcounter + 1}
+{if ($fieldcounter < 7) || ($field->name == 'sort_order' ) || ($field->name == 'stealth') || ($field->name == 'enabled')}
+			'{$field->name}',
+{/if}
+{/if}
+{/foreach}
+		];
+	}
+
+	/**
+	 * Get the fields for edit forms
+	 * @return string[] form fields
+	 */
+	public function formFields() {
+		return [
+{foreach $structure as $field}
+{if $field->hidden_in_forms == false}
+			'{$field->name}',
+{/if}
+{/foreach}
+		];
+	}
+
+	/**
+	 * Get the field default value
+	 * @param string $field
+	 * @return integer
+	 */
+	public function fieldDefaultValue($field) {
+		$items = [
+{foreach $structure as $field}
+			'{$field->name}' => '{$field->default_value}',
+{/foreach}
+		];
+		if (!array_key_exists($field, $items)) {
+			return 0;
+		}
+		return $items[$field];
+	}
+
+	/**
+	 * Get the field max length
+	 * @param string $field
+	 * @return integer
+	 */
+	public function fieldLength($field) {
+		$items = [
+{foreach $structure as $field}
+			'{$field->name}' => {$field->length},
+{/foreach}
+		];
+		if (!array_key_exists($field, $items)) {
+			return 0;
+		}
+		return $items[$field];
+	}
+
+	/**
+	 * Get whether the field is required
+	 * @param string $field
+	 * @return boolean
+	 */
+	public function fieldIsRequired($field) {
+		$items = [
+{foreach $structure as $field}
+			'{$field->name}' => {$field->required},
+{/foreach}
+		];
+		if (!array_key_exists($field, $items)) {
+			return false;
+		}
+		return $items[$field];
+	}
+}

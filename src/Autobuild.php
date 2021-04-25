@@ -2,6 +2,83 @@
 
 namespace Granada\Builder;
 
+class TableStructure {
+	public $humanName;
+	public $representation;
+	public $defaultorder;
+	public $tablename;
+	public $namespace;
+	public $modelname;
+	public $fields;
+	public $hasMany;
+	public $belongsTo;
+	public $deleteForReal;
+	public $nestedSet;
+	public $controllerToExtend;
+	public $modelToExtend;
+
+	public function __construct($data) {
+		foreach ($data as $field => $content) {
+			$this->$field = $content;
+		}
+	}
+}
+
+class FieldStructure {
+	public $name;
+	public $arvarname;
+	public $displayname;
+	public $helptext;
+	public $type;
+	public $ignorexss;
+	public $doctype;
+	public $remove_prefix;
+	public $unique;
+	public $belongsToModel;
+	public $belongsToModelURL;
+	public $options;
+	public $length;
+	public $required;
+	public $hidden_in_forms;
+	public $default_value;
+	public $timezone_mode;
+	public $timezone_comparison_mode;
+	public $comment_flags;
+
+	public function __construct($data) {
+		foreach ($data as $field => $content) {
+			$this->$field = $content;
+		}
+	}
+}
+
+class BelongsToStructure {
+	public $varname;
+	public $namespace;
+	public $modelname;
+	public $arvarname;
+
+	public function __construct($data) {
+		foreach ($data as $field => $content) {
+			$this->$field = $content;
+		}
+	}
+}
+
+class HasManyStructure {
+	public $varname;
+	public $namespace;
+	public $modelname;
+	public $arvarname;
+	public $defaultorder;
+
+	public function __construct($data) {
+		foreach ($data as $field => $content) {
+			$this->$field = $content;
+		}
+	}
+}
+
 class Autobuild extends \Granada\ORM {
 
 	private static $_use_namespaces = false;
@@ -155,7 +232,7 @@ class Autobuild extends \Granada\ORM {
 			AND
 				table_name="' . $tablename . '"')->find_array();
 
-		$belongsTo = array();
+		$belongsTo = [];
 		foreach ($tablefields as $tablefield) {
 			$namespace = self::getNamespace($tablefield['referenced_table_name']);
 			$modelname = self::getModelName($tablefield['referenced_table_name']);
@@ -166,12 +243,12 @@ class Autobuild extends \Granada\ORM {
 				$arvarname = $varname;
 			}
 
-			$belongsTo[] = array(
+			$belongsTo[] = new BelongsToStructure([
 				'varname' => $varname,
 				'namespace' => $namespace,
 				'modelname' => $modelname,
 				'arvarname' => $arvarname,
-			);
+			]);
 		}
 
 		return $belongsTo;
@@ -209,13 +286,13 @@ class Autobuild extends \Granada\ORM {
 					$defaultorder = 'sort_order';
 				}
 			}
-			$hasMany[] = array(
+			$hasMany[] = new HasManyStructure([
 				'varname' => $varname,
 				'namespace' => $namespace,
 				'modelname' => $modelname,
 				'arvarname' => $arvarname . ($arvars[$arvarname] ? $arvars[$arvarname] : ''),
 				'defaultorder' => $defaultorder,
-			);
+			]);
 			$arvars[$arvarname]++;
 		}
 
@@ -226,7 +303,7 @@ class Autobuild extends \Granada\ORM {
 	 * Get the table structure from the database
 	 *
 	 * @param string $tablename
-	 * @return Array Structure of the table
+	 * @return TableStructure Structure of the table
 	 */
 	public static function getStructure($tablename, $namespace, $modelname, $humanName) {
 		$tablefields = self::for_table('ost')->raw_query('SHOW FULL COLUMNS FROM `' . $tablename . '`')->find_array();
@@ -276,7 +353,7 @@ class Autobuild extends \Granada\ORM {
 
 			$ref_fields = array();
 			foreach ($belongsTo as $btitem) {
-				$ref_fields[] = $btitem['varname'];
+				$ref_fields[] = $btitem->varname;
 			}
 
 			if (!$representation) {
@@ -382,10 +459,10 @@ class Autobuild extends \Granada\ORM {
 					$tftype = 'integer';
 					$doctype = 'integer';
 					foreach ($belongsTo as $belongsToItem) {
-						if ($belongsToItem['varname'] == $tablefieldname) {
+						if ($belongsToItem->varname == $tablefieldname) {
 							$tftype = 'reference';
-							$belongsToModel = '\\' . $belongsToItem['namespace'] . '\\' . $belongsToItem['modelname'];
-							$belongsToModelURL = lcfirst($belongsToItem['namespace']) . '/' . lcfirst($belongsToItem['modelname']);
+							$belongsToModel = '\\' . $belongsToItem->namespace . '\\' . $belongsToItem->modelname;
+							$belongsToModelURL = lcfirst($belongsToItem->namespace) . '/' . lcfirst($belongsToItem->modelname);
 							if (substr($tablefieldname, -3) == '_id') {
 								$displayname = ucwords(str_replace('_', ' ', substr($tablefieldname, 0, -3)));
 							} else {
@@ -397,7 +474,14 @@ class Autobuild extends \Granada\ORM {
 			} else if ($first == 'enum') {
 				$tftype = 'enum'; //todo rest of options
 				$doctype = 'string';
-				$options = trim(substr($tablefield['Type'], 4), '()');
+				$options_string = trim(substr($tablefield['Type'], 4), '()');
+				$options = explode(',', $options_string);
+				foreach ($options as $key => $data) {
+					$options[$key] = trim($data, "'");
+					if (strlen($options[$key]) == 0) {
+						unset($options[$key]);
+					}
+				}
 			} else if ($first == 'varchar') {
 				if ($length <= 255) {
 					$tftype = 'string';
@@ -465,7 +549,7 @@ class Autobuild extends \Granada\ORM {
 			if ($remove_prefix) {
 				$displayname = substr($displayname, strpos($displayname, ' ') + 1);
 			}
-			$structure[$tablefieldname] = array(
+			$structure[$tablefieldname] = new FieldStructure([
 				'name' => $tablefieldname,
 				'arvarname' => substr($tablefieldname, 0, -3),
 				'displayname' => $displayname,
@@ -485,7 +569,7 @@ class Autobuild extends \Granada\ORM {
 				'timezone_mode' => $timezone_mode,
 				'timezone_comparison_mode' => $timezone_comparison_mode,
 				'comment_flags' => array_keys($cflags),
-			);
+			]);
 			$fieldnames[] = $tablefieldname;
 		}
 
@@ -503,11 +587,11 @@ class Autobuild extends \Granada\ORM {
 
 		$model_vars = array();
 		foreach ($structure as $var) {
-			$model_vars[$var['name']] = 'structure';
+			$model_vars[$var->name] = 'structure';
 		}
 
 		foreach ($hasMany as $var) {
-			$vname = $var['arvarname'];
+			$vname = $var->arvarname;
 			if (array_key_exists($vname, $model_vars)) {
 				echo '\\' . $namespace . '\\' . $modelname . '::$' . $vname . ' already exists as a ' . $model_vars[$vname] . PHP_EOL;
 			}
@@ -515,7 +599,7 @@ class Autobuild extends \Granada\ORM {
 		}
 
 		foreach ($belongsTo as $var) {
-			$vname = $var['arvarname'];
+			$vname = $var->arvarname;
 			if (array_key_exists($vname, $model_vars)) {
 				echo '\\' . $namespace . '\\' . $modelname . '::$' . $vname . ' already exists as a ' . $model_vars[$vname] . PHP_EOL;
 			}
@@ -525,7 +609,7 @@ class Autobuild extends \Granada\ORM {
 		if (!$representation) {
 			$representation = 'id';
 		}
-		return array(
+		return new TableStructure([
 			'humanName' => $humanName,
 			'representation' => $representation,
 			'defaultorder' => $defaultorder ? $defaultorder : $representation,
@@ -538,12 +622,12 @@ class Autobuild extends \Granada\ORM {
 			'belongsTo' => $belongsTo,
 			'deleteForReal' => $deleteForReal,
 			'nestedSet' => $nestedSet,
-		);
+		]);
 	}
 
 	/**
 	 * Create the model files
-	 * @param array $tabledata Information about the table
+	 * @param TableStructure $tabledata Information about the table
 	 * @param string $modelpath path to output models to
 	 * @param string $controllerpath path to output controllers to
 	 */
@@ -552,12 +636,12 @@ class Autobuild extends \Granada\ORM {
 		if (is_null($classmap)) {
 			$classmap = array();
 		}
-		if (!$tabledata['modelname']) {
+		if (!$tabledata->modelname) {
 			return false;
 		}
 
-		$modelpath = $model_base_path . '/' . $tabledata['namespace'] . '/Models';
-		$controllerpath = $model_base_path . '/' . $tabledata['namespace'] . '/Controllers';
+		$modelpath = $model_base_path . '/' . $tabledata->namespace . '/Models';
+		$controllerpath = $model_base_path . '/' . $tabledata->namespace . '/Controllers';
 
 		if (!file_exists($controllerpath)) {
 			mkdir($controllerpath, 0755, true);
@@ -570,29 +654,39 @@ class Autobuild extends \Granada\ORM {
 			$modelpath = dirname($modelpath);
 		}
 
-		$controllerfile = $controllerpath . '/' . $tabledata['modelname'] . 'Controller.php';
-		$modelfile = $modelpath . '/' . $tabledata['modelname'] . '.php';
-		$basefile = $modelpath . '/_base/Base' . $tabledata['modelname'] . '.php';
-		$queryfile = $modelpath . '/_base/Query' . $tabledata['modelname'] . '.php';
+		$controllerfile = $controllerpath . '/' . $tabledata->modelname . 'Controller.php';
+		$modelfile = $modelpath . '/' . $tabledata->modelname . '.php';
+		$basefile = $modelpath . '/_base/Base' . $tabledata->modelname . '.php';
+		$queryfile = $modelpath . '/_base/Query' . $tabledata->modelname . '.php';
 
 		$basepath = dirname($basefile);
 		if (!file_exists($basepath)) {
 			mkdir($basepath, 0755, true);
 		}
 
-		// initialize Twig environment
-		$twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(__DIR__ . '/../autotemplates'));
-		$twig->addFilter(new \Twig\TwigFilter('lcfirst', 'lcfirst'));
+		// initialize Latte environment
+		$latte = new \Latte\Engine;
+		$latte->setTempDirectory(sys_get_temp_dir());
+		$templatedir = dirname(__DIR__) . '/autotemplates/';
 
-		file_put_contents($basefile, $twig->render('baseModelTemplate.twig', $tabledata));
-		file_put_contents($queryfile, $twig->render('queryModelTemplate.twig', $tabledata));
+		ob_start();
+		$latte->render($templatedir . 'baseModelTemplate.latte', $tabledata);
+		file_put_contents($basefile, ob_get_clean());
+
+		ob_start();
+		$latte->render($templatedir . 'queryModelTemplate.latte', $tabledata);
+		file_put_contents($queryfile, ob_get_clean());
 
 		if (!file_exists($modelfile)) {
-			file_put_contents($modelfile, $twig->render('modelTemplate.twig', $tabledata));
+			ob_start();
+			$latte->render($templatedir . 'modelTemplate.latte', $tabledata);
+			file_put_contents($modelfile, ob_get_clean());
 		}
 
 		if (!file_exists($controllerfile)) {
-			file_put_contents($controllerfile, $twig->render('controllerTemplate.twig', $tabledata));
+			ob_start();
+			$latte->render($templatedir . 'controllerTemplate.latte', $tabledata);
+			file_put_contents($controllerfile, ob_get_clean());
 		}
 	}
 
@@ -613,9 +707,8 @@ class Autobuild extends \Granada\ORM {
 			$humanName = self::getHumanName($table);
 
 			$tabledata = self::getStructure($table, $namespace, $modelname, $humanName);
-			$tabledata['controllerToExtend'] = $controller_model_to_extend;
-			$tabledata['modelToExtend'] = $model_to_extend;
-
+			$tabledata->controllerToExtend = $controller_model_to_extend;
+			$tabledata->modelToExtend = $model_to_extend;
 			self::createModels($tabledata, $models_output_dir);
 		}
 	}
