@@ -79,39 +79,65 @@ class HasManyStructure {
 	}
 }
 
-class Autobuild extends \Granada\ORM {
+class Autobuild {
 
-	private static $_use_namespaces = false;
-	private static $_namespace_prefixes = [];
-	private static $_default_namespace = 'Auto';
-	private static $_plural_tables = [];
-
-	public static function setUseNamespaces($val) {
-		self::$_use_namespaces = $val;
+	public static function start() {
+		return new self;
 	}
 
-	public static function setDefaultNamespace($val) {
-		self::$_default_namespace = $val;
+	private $_use_namespaces = false;
+	private $_namespace_prefixes = [];
+	private $_default_namespace = 'Auto';
+	private $_plural_tables = [];
+	private $_models_output_dir = '';
+	private $_model_to_extend = '';
+	private $_controller_model_to_extend = '';
+
+	public function setUseNamespaces($val) {
+		$this->_use_namespaces = $val;
+		return $this;
 	}
 
-	public static function setPluralTables($val) {
-		self::$_plural_tables = $val;
+	public function setDefaultNamespace($val) {
+		$this->_default_namespace = $val;
+		return $this;
 	}
 
-	public static function setNamespacePrefixes($val) {
-		self::$_namespace_prefixes = $val;
+	public function setPluralTables($val) {
+		$this->_plural_tables = $val;
+		return $this;
 	}
 
-	private static function useNamespace($tablename) {
+	public function setNamespacePrefixes($val) {
+		$this->_namespace_prefixes = $val;
+		return $this;
+	}
+
+	public function setOutputDir($val) {
+		$this->_models_output_dir = $val;
+		return $this;
+	}
+
+	public function setModelToExtend($val) {
+		$this->_model_to_extend = $val;
+		return $this;
+	}
+
+	public function setControllerModelToExtend($val) {
+		$this->_controller_model_to_extend = $val;
+		return $this;
+	}
+
+	public function useNamespace($tablename) {
 		$tablename_split = preg_split("/_/", $tablename, 2);
-		if (self::$_use_namespaces || in_array($tablename_split[0], self::$_namespace_prefixes)) {
+		if ($this->_use_namespaces || in_array($tablename_split[0], $this->_namespace_prefixes)) {
 			return true;
 		}
 		return false;
 	}
 
-	public static function getNamespace($tablename) {
-		if (self::useNamespace($tablename)) {
+	public function getNamespace($tablename) {
+		if ($this->useNamespace($tablename)) {
 			if (strpos($tablename, '_') === FALSE) {
 				// Avoid tables that don't need a model as not a namespace
 				return '';
@@ -119,28 +145,28 @@ class Autobuild extends \Granada\ORM {
 		}
 
 		$tablename_split = preg_split("/_/", $tablename, 2);
-		if (self::useNamespace($tablename)) {
+		if ($this->useNamespace($tablename)) {
 			$namespace = ucfirst($tablename_split[0]);
 		} else {
-			$namespace = self::$_default_namespace;
+			$namespace = $this->_default_namespace;
 		}
 		return $namespace;
 	}
 
-	public static function getModelName($tablename) {
-		if (self::useNamespace($tablename)) {
+	public function getModelName($tablename) {
+		if ($this->useNamespace($tablename)) {
 			if (strpos($tablename, '_') === FALSE) {
 				// Avoid tables that don't need a model as not a namespace
 				return '';
 			}
 
 			$tablename_split = preg_split("/_/", $tablename, 2);
-			$modelname = ucfirst(self::to_camel_case($tablename_split[1]));
+			$modelname = ucfirst($this->to_camel_case($tablename_split[1]));
 		} else {
-			$modelname = ucfirst(self::to_camel_case($tablename));
+			$modelname = ucfirst($this->to_camel_case($tablename));
 		}
-		if (in_array($tablename, self::$_plural_tables)) {
-			$modelname = self::singularize($modelname);
+		if (in_array($tablename, $this->_plural_tables)) {
+			$modelname = $this->singularize($modelname);
 		}
 		// Ensure no numeric-starting models
 		if (is_numeric(substr($modelname, 0, 1))) {
@@ -149,8 +175,8 @@ class Autobuild extends \Granada\ORM {
 		return $modelname;
 	}
 
-	public static function getHumanName($tablename) {
-		if (self::useNamespace($tablename)) {
+	public function getHumanName($tablename) {
+		if ($this->useNamespace($tablename)) {
 			if (strpos($tablename, '_') === FALSE) {
 				// Avoid tables that don't need a model as not a namespace
 				return '';
@@ -161,8 +187,8 @@ class Autobuild extends \Granada\ORM {
 		} else {
 			$humanName = ucwords(str_replace('_', ' ', $tablename));
 		}
-		if (in_array($tablename, self::$_plural_tables)) {
-			$humanName = self::singularize($humanName);
+		if (in_array($tablename, $this->_plural_tables)) {
+			$humanName = $this->singularize($humanName);
 		}
 		return $humanName;
 	}
@@ -172,7 +198,7 @@ class Autobuild extends \Granada\ORM {
 	 * @param string $str String in underscore format
 	 * @return string
 	 */
-	public static function to_camel_case($str) {
+	public function to_camel_case($str) {
 		return \Doctrine\Inflector\InflectorFactory::create()->build()->camelize($str);
 	}
 
@@ -182,7 +208,7 @@ class Autobuild extends \Granada\ORM {
 	 * @param integer $count Optional - if set to 1 will not pluralize
 	 * @return string the pluralized word
 	 */
-	public static function pluralize($name, $count = 0) {
+	public function pluralize($name, $count = 0) {
 		if ($count == 1) {
 			return $name;
 		}
@@ -194,14 +220,14 @@ class Autobuild extends \Granada\ORM {
 	 * @param mixed $name
 	 * @return string
 	 */
-	public static function singularize($name) {
+	public function singularize($name) {
 		return \Doctrine\Inflector\InflectorFactory::create()->build()->singularize($name);
 	}
 
-	public static function getTables() {
+	public function getTables() {
 
 		$tables = array();
-		$result = self::for_table('post')->raw_query('SHOW TABLES')->find_array();
+		$result = \Granada\ORM::for_table('post')->raw_query('SHOW TABLES')->find_array();
 
 		foreach ($result as $table) {
 			$tables[] = array_pop($table);
@@ -210,14 +236,14 @@ class Autobuild extends \Granada\ORM {
 		return $tables;
 	}
 
-	public static function getCurDB() {
-		$dbname = self::for_table('ost')->raw_query('SELECT DATABASE() as dbname')->find_one();
+	public function getCurDB() {
+		$dbname = \Granada\ORM::for_table('ost')->raw_query('SELECT DATABASE() as dbname')->find_one();
 
 		return $dbname['dbname'];
 	}
 
-	public static function getBelongsTo($tablename) {
-		$tablefields = self::for_table('ost')->raw_query('
+	public function getBelongsTo($tablename) {
+		$tablefields = \Granada\ORM::for_table('ost')->raw_query('
 			SELECT
 				table_name,
 				column_name,
@@ -228,14 +254,14 @@ class Autobuild extends \Granada\ORM {
 			WHERE
 				referenced_table_name is not null
 			AND
-				constraint_schema="' . self::getCurDB() . '"
+				constraint_schema="' . $this->getCurDB() . '"
 			AND
 				table_name="' . $tablename . '"')->find_array();
 
 		$belongsTo = [];
 		foreach ($tablefields as $tablefield) {
-			$namespace = self::getNamespace($tablefield['referenced_table_name']);
-			$modelname = self::getModelName($tablefield['referenced_table_name']);
+			$namespace = $this->getNamespace($tablefield['referenced_table_name']);
+			$modelname = $this->getModelName($tablefield['referenced_table_name']);
 			$varname = $tablefield['column_name'];
 			if (substr($varname, -3) == '_id') {
 				$arvarname = substr($varname, 0, -3);
@@ -254,8 +280,8 @@ class Autobuild extends \Granada\ORM {
 		return $belongsTo;
 	}
 
-	public static function getHasMany($tablename) {
-		$tablefields = self::for_table('ost')->raw_query('
+	public function getHasMany($tablename) {
+		$tablefields = \Granada\ORM::for_table('ost')->raw_query('
 			SELECT
 				table_name,
 				column_name,
@@ -264,22 +290,22 @@ class Autobuild extends \Granada\ORM {
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				constraint_schema="' . self::getCurDB() . '"
+				constraint_schema="' . $this->getCurDB() . '"
 			AND
 				referenced_table_name="' . $tablename . '"')->find_array();
 
 		$hasMany = array();
 		$arvars = array();
 		foreach ($tablefields as $tablefield) {
-			$namespace = self::getNamespace($tablefield['table_name']);
-			$modelname = self::getModelName($tablefield['table_name']);
-			$arvarname = lcfirst(self::pluralize($modelname));
+			$namespace = $this->getNamespace($tablefield['table_name']);
+			$modelname = $this->getModelName($tablefield['table_name']);
+			$arvarname = lcfirst($this->pluralize($modelname));
 			$varname = $tablefield['column_name'];
 			if (!array_key_exists($arvarname, $arvars)) {
 				$arvars[$arvarname] = 0;
 			}
 
-			$foreigntablefields = self::for_table('ost')->raw_query('SHOW FULL COLUMNS FROM `' . $tablefield['table_name'] . '`')->find_array();
+			$foreigntablefields = \Granada\ORM::for_table('ost')->raw_query('SHOW FULL COLUMNS FROM `' . $tablefield['table_name'] . '`')->find_array();
 			$defaultorder = '';
 			foreach ($foreigntablefields as $foreigntablefield) {
 				if ($foreigntablefield['Field'] == 'sort_order') {
@@ -305,8 +331,8 @@ class Autobuild extends \Granada\ORM {
 	 * @param string $tablename
 	 * @return TableStructure Structure of the table
 	 */
-	public static function getStructure($tablename, $namespace, $modelname, $humanName) {
-		$tablefields = self::for_table('ost')->raw_query('SHOW FULL COLUMNS FROM `' . $tablename . '`')->find_array();
+	public function getStructure($tablename, $namespace, $modelname, $humanName) {
+		$tablefields = \Granada\ORM::for_table('ost')->raw_query('SHOW FULL COLUMNS FROM `' . $tablename . '`')->find_array();
 
 		// Build model files for table
 
@@ -348,8 +374,8 @@ class Autobuild extends \Granada\ORM {
 				$required = 'false';
 			}
 
-			$hasMany = self::getHasMany($tablename);
-			$belongsTo = self::getBelongsTo($tablename);
+			$hasMany = $this->getHasMany($tablename);
+			$belongsTo = $this->getBelongsTo($tablename);
 
 			$ref_fields = array();
 			foreach ($belongsTo as $btitem) {
@@ -631,7 +657,7 @@ class Autobuild extends \Granada\ORM {
 	 * @param string $modelpath path to output models to
 	 * @param string $controllerpath path to output controllers to
 	 */
-	public static function createModels($tabledata, $model_base_path) {
+	public function createModels($tabledata, $model_base_path) {
 		static $classmap = NULL;
 		if (is_null($classmap)) {
 			$classmap = array();
@@ -693,23 +719,19 @@ class Autobuild extends \Granada\ORM {
 	/**
 	 * Entrypoint
 	 */
-	public static function doBuild($models_output_dir, $model_to_extend, $controller_model_to_extend, $use_namespaces, $namespace_prefixes, $default_namespace, $plural_tables) {
+	public function doBuild() {
 
-		$tables = self::getTables($plural_tables);
-		self::setPluralTables($plural_tables);
-		self::setDefaultNamespace($default_namespace);
-		self::setUseNamespaces($use_namespaces);
-		self::setNamespacePrefixes($namespace_prefixes);
+		$tables = $this->getTables($this->_plural_tables);
 
 		foreach ($tables as $table) {
-			$namespace = self::getNamespace($table);
-			$modelname = self::getModelName($table);
-			$humanName = self::getHumanName($table);
+			$namespace = $this->getNamespace($table);
+			$modelname = $this->getModelName($table);
+			$humanName = $this->getHumanName($table);
 
-			$tabledata = self::getStructure($table, $namespace, $modelname, $humanName);
-			$tabledata->controllerToExtend = $controller_model_to_extend;
-			$tabledata->modelToExtend = $model_to_extend;
-			self::createModels($tabledata, $models_output_dir);
+			$tabledata = $this->getStructure($table, $namespace, $modelname, $humanName);
+			$tabledata->controllerToExtend = $this->_controller_model_to_extend;
+			$tabledata->modelToExtend = $this->_model_to_extend;
+			$this->createModels($tabledata, $this->_models_output_dir);
 		}
 	}
 }

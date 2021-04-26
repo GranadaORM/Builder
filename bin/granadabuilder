@@ -75,4 +75,12 @@ include($configfile);
 \Granada\ORM::configure('username', $db_username);
 \Granada\ORM::configure('password', $db_password);
 
-\Granada\Builder\Autobuild::doBuild($models_output_dir, $model_to_extend, $controller_model_to_extend, $use_namespaces, $namespace_prefixes, $default_namespace, $plural_tables);
+\Granada\Builder\Autobuild::start()
+	->setPluralTables($plural_tables)
+	->setDefaultNamespace($default_namespace)
+	->setUseNamespaces($use_namespaces)
+	->setNamespacePrefixes($namespace_prefixes)
+	->setOutputDir($models_output_dir)
+	->setModelToExtend($model_to_extend)
+	->setControllerModelToExtend($controller_model_to_extend)
+	->doBuild();
