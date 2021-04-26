@@ -731,6 +731,16 @@ class Autobuild {
 			$tabledata = $this->getStructure($table, $namespace, $modelname, $humanName);
 			$tabledata->controllerToExtend = $this->_controller_model_to_extend;
 			$tabledata->modelToExtend = $this->_model_to_extend;
+			if (array_key_exists('sort_order', $tabledata->structure)) {
+				// Check and renumber sort_order columns if found to have zeros
+				$curmax = \Granada\ORM::for_table($table)->max('sort_order');
+				$zero_sort_orders = \Granada\ORM::for_table($table)->where('sort_order', 0)->find_many();
+				foreach ($zero_sort_orders as $zero_sort_order) {
+					$curmax++;
+					$zero_sort_order->sort_order = $curmax;
+					$zero_sort_order->save();
+				}
+			}
 			$this->createModels($tabledata, $this->_models_output_dir);
 		}
 	}
