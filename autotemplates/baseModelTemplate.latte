@@ -181,7 +181,11 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 	 */
 	public function ignoreDirtyForTimestamps() {
 		return [
-			'sort_order',
+{foreach $structure as $field}
+{if $field->name == 'sort_order'}
+			'{$field->name}',
+{/if}
+{/foreach}
 		];
 	}
 
