@@ -3,7 +3,7 @@
 /**
  * This is the base model class for the database table '{$tablename}'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  */
 
 namespace {$namespace};
@@ -11,6 +11,13 @@ namespace {$namespace};
 /**
  *
  * @method string[] find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method array find_pairs(string|null $key, string|null $value) Gets data in array form, as pairs of data for each row in the results. The key and value are the database column to use as the array keys and values
+ * @method boolean delete_many() Delete all matching records
+ * @method integer count(string $column) Get the count of the column
+ * @method string max(string $column) Will return the max value of the chosen column.
+ * @method string min(string $column) Will return the min value of the chosen column.
+ * @method string avg(string $column) Will return the average value of the chosen column.
+ * @method string sum(string $column) Will return the sum of the values of the chosen column.
  * @method \{$namespace}\{$modelname} find_one(integer $id) Find one matching record. If $id is set, get the pk record
  * @method \{$namespace}\{$modelname}[] find_many() Find all matching records
  * @method \{$namespace}\Query{$modelname} raw_query(string $query, array $parameters) Perform a raw query. The query can contain placeholders in either named or question mark style. If placeholders are used, the parameters should be an array of values which will be bound to the placeholders in the query. If this method is called, all other query building methods will be ignored.
@@ -42,12 +49,12 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} having_raw(string $clause, string[] $parameters) Add a raw HAVING clause to the query. The clause should contain question mark placeholders, which will be bound to the parameters supplied in the second argument.
 {foreach $structure as $field}
 {if $field->type == 'dob' or $field->type == 'date' or $field->type == 'datetime' }
- * @method \{$namespace}\Query{$modelname} where_{$field->name}(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} = clause to your query
- * @method \{$namespace}\Query{$modelname} where_{$field->name}_not_equal(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} != clause to your query
- * @method \{$namespace}\Query{$modelname} where_{$field->name}_gt(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} > clause to your query
- * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} < clause to your query
- * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} >= clause to your query
- * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte(\Cake\Chronos\Chronos $value) Add a WHERE {$field->name} <= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}({$chronosModel} $value) Add a WHERE {$field->name} = clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_not_equal({$chronosModel} $value) Add a WHERE {$field->name} != clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gt({$chronosModel} $value) Add a WHERE {$field->name} > clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt({$chronosModel} $value) Add a WHERE {$field->name} < clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte({$chronosModel} $value) Add a WHERE {$field->name} >= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte({$chronosModel} $value) Add a WHERE {$field->name} <= clause to your query
 {else}
  * @method \{$namespace}\Query{$modelname} where_{$field->name}(string $value) Add a WHERE {$field->name} = clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_not_equal(string $value) Add a WHERE {$field->name} != clause to your query
@@ -78,13 +85,13 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} where_not_in(string $column_name, string[] $values) Add a WHERE ... NOT IN clause to your query
  * @method \{$namespace}\Query{$modelname} where_null(string $column_name) Add a WHERE column IS NULL clause to your query
  * @method \{$namespace}\Query{$modelname} where_not_null(string $column_name) Add a WHERE column IS NOT NULL clause to your query
- * @method \{$namespace}\Query{$modelname} where_datetime_gt(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... > clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime_lt(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... < clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime_gte(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... >= clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime_lte(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... <= clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... = clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime_equal(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... = clause to your query, Takes timezone comparison settings into account
- * @method \{$namespace}\Query{$modelname} where_datetime_not_equal(string $column_name, \Cake\Chronos\Chronos $value) Add a WHERE ... != clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_gt(string $column_name, {$chronosModel} $value) Add a WHERE ... > clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_lt(string $column_name, {$chronosModel} $value) Add a WHERE ... < clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_gte(string $column_name, {$chronosModel} $value) Add a WHERE ... >= clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_lte(string $column_name, {$chronosModel} $value) Add a WHERE ... <= clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime(string $column_name, {$chronosModel} $value) Add a WHERE ... = clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_equal(string $column_name, {$chronosModel} $value) Add a WHERE ... = clause to your query, Takes timezone comparison settings into account
+ * @method \{$namespace}\Query{$modelname} where_datetime_not_equal(string $column_name, {$chronosModel} $value) Add a WHERE ... != clause to your query, Takes timezone comparison settings into account
 {/if}
  * @method \{$namespace}\Query{$modelname} where_raw(string $clause, array $parameters = NULL) Add a raw WHERE clause to the query. The clause should contain question mark placeholders, which will be bound to the parameters supplied in the second argument.
  * @method \{$namespace}\Query{$modelname} with(string $name) Eager-load data from another table
@@ -98,6 +105,7 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} order_by_rand() Fetch items in a random order. Use sparingly and ensure a LIMIT is placed
  * @method \{$namespace}\Query{$modelname} order_by_expr(string $clause) Add an unquoted expression as an ORDER BY clause
  * @method \{$namespace}\Query{$modelname} order_by_list(string $column_name, integer[] $list) Add an ORDER BY FIELD column clause to make the ordering a specific sequence
+ * @method \{$namespace}\Query{$modelname} defaultFilter()
  * @method \{$namespace}\Query{$modelname} onlyif(bool $condition, callable $query) Add a WHERE, ORDER BY or LIMIT clause only if the condition is true
  */
 

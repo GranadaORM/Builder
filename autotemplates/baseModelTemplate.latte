@@ -3,7 +3,7 @@
 /**
  * This is the base model class for the database table '{$tablename}'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  * If any changes are required, override them in the '{$namespace}\{$modelname}' class.
  */
 
@@ -16,7 +16,7 @@ namespace {$namespace};
  * @property array ${$field->name}_decoded
 {/if}
 {if ($field->type == 'dob') || ($field->type == 'date') || ($field->type == 'datetime') || ($field->type == 'time')}
- * @property \Cake\Chronos\Chronos ${$field->name}_chronos
+ * @property {$chronosModel} ${$field->name}_chronos
 {/if}
 {/foreach}
 {foreach $belongsTo as $field}
@@ -439,16 +439,24 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 	}
 
 	/**
-	 * Get the field default value
-	 * @param string $field
-	 * @return integer
+	 * Get list of defaults for each field
+	 * @return array
 	 */
-	public function fieldDefaultValue($field) {
-		$items = [
+	public static function defaultValues() {
+		return [
 {foreach $structure as $field}
 			'{$field->name}' => '{$field->default_value}',
 {/foreach}
 		];
+	}
+
+	/**
+	 * Get the field default value
+	 * @param string $field
+	 * @return mixed
+	 */
+	public function fieldDefaultValue($field) {
+		$items = self::defaultValues();
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}

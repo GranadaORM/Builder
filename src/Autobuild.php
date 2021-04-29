@@ -90,7 +90,9 @@ class Autobuild {
 	private $_default_namespace = 'Auto';
 	private $_plural_tables = [];
 	private $_models_output_dir = '';
+	private $_models_output_dir_map = [];
 	private $_model_to_extend = '';
+	private $_chronos_model = '';
 	private $_controller_model_to_extend = '';
 
 	public function setUseNamespaces($val) {
@@ -113,13 +115,19 @@ class Autobuild {
 		return $this;
 	}
 
-	public function setOutputDir($val) {
+	public function setOutputDirs($val, $map) {
 		$this->_models_output_dir = $val;
+		$this->_models_output_dir_map = $map;
 		return $this;
 	}
 
 	public function setModelToExtend($val) {
 		$this->_model_to_extend = $val;
+		return $this;
+	}
+
+	public function setChronosModel($val) {
+		$this->_chronos_model = $val;
 		return $this;
 	}
 
@@ -601,10 +609,10 @@ class Autobuild {
 
 		if ((in_array('root', $fieldnames)) && (in_array('level', $fieldnames)) && (in_array('lft', $fieldnames)) && (in_array('rgt', $fieldnames))) {
 			$nestedSet = true;
-			$structure['root']['hidden_in_forms'] = true;
-			$structure['level']['hidden_in_forms'] = true;
-			$structure['lft']['hidden_in_forms'] = true;
-			$structure['rgt']['hidden_in_forms'] = true;
+			$structure['root']->hidden_in_forms = true;
+			$structure['level']->hidden_in_forms = true;
+			$structure['lft']->hidden_in_forms = true;
+			$structure['rgt']->hidden_in_forms = true;
 		} else {
 			$nestedSet = false;
 		}
@@ -654,16 +662,20 @@ class Autobuild {
 	/**
 	 * Create the model files
 	 * @param TableStructure $tabledata Information about the table
-	 * @param string $modelpath path to output models to
-	 * @param string $controllerpath path to output controllers to
 	 */
-	public function createModels($tabledata, $model_base_path) {
+	public function createModels($tabledata) {
 		static $classmap = NULL;
 		if (is_null($classmap)) {
 			$classmap = array();
 		}
 		if (!$tabledata->modelname) {
 			return false;
+		}
+		$model_base_path = $this->_models_output_dir;
+
+		// Use custom output dir from map
+		if (array_key_exists($tabledata->namespace, $this->_models_output_dir_map)) {
+			$model_base_path = $this->_models_output_dir_map[$tabledata->namespace];
 		}
 
 		$modelpath = $model_base_path . '/' . $tabledata->namespace . '/Models';
@@ -731,6 +743,7 @@ class Autobuild {
 			$tabledata = $this->getStructure($table, $namespace, $modelname, $humanName);
 			$tabledata->controllerToExtend = $this->_controller_model_to_extend;
 			$tabledata->modelToExtend = $this->_model_to_extend;
+			$tabledata->chronosModel = $this->_chronos_model;
 			if (array_key_exists('sort_order', $tabledata->structure)) {
 				// Check and renumber sort_order columns if found to have zeros
 				$curmax = \Granada\ORM::for_table($table)->max('sort_order');
@@ -741,7 +754,7 @@ class Autobuild {
 					$zero_sort_order->save();
 				}
 			}
-			$this->createModels($tabledata, $this->_models_output_dir);
+			$this->createModels($tabledata);
 		}
 	}
 }

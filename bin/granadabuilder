@@ -54,33 +54,38 @@ if ($show_config_file_template) {
 
 	die(1);
 }
-// Configuration defaults
-$db_host = 'localhost';
-$db_port = 3306;
-$db_name = '';
-$db_username = '';
-$db_password = '';
-$models_output_dir = __DIR__ . '/Auto';
-$model_to_extend = '\MyApp\ORMBaseClass';
-$controller_model_to_extend = '\Auto\Controller';
-$use_namespaces = false;
-$namespace_prefixes = [];
-$default_namespace = 'MyApp';
-$plural_tables = [];
 
-// Override from local config file
-include($configfile);
+// Read from config
 
-\Granada\ORM::configure('mysql:host=' . $db_host . ';port=' . $db_port . ';dbname=' . $db_name);
-\Granada\ORM::configure('username', $db_username);
-\Granada\ORM::configure('password', $db_password);
+$config = array_merge([
+	// Configuration defaults
+	'db_host' => 'localhost',
+	'db_port' => 3306,
+	'db_name' => '',
+	'db_username' => '',
+	'db_password' => '',
+	'models_output_dir' => __DIR__ . '/Auto',
+	'models_output_dir_map' => [],
+	'model_to_extend' => '\MyApp\ORMBaseClass',
+	'controller_model_to_extend' => '\Auto\Controller',
+	'use_namespaces' => false,
+	'namespace_prefixes' => [],
+	'default_namespace' => 'MyApp',
+	'chronos_model' => '\Cake\Chronos\Chronos',
+	'plural_tables' => [],
+], json_decode(file_get_contents($configfile), true));
+
+\Granada\ORM::configure('mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name']);
+\Granada\ORM::configure('username', $config['db_username']);
+\Granada\ORM::configure('password', $config['db_password']);
 
 \Granada\Builder\Autobuild::start()
-	->setPluralTables($plural_tables)
-	->setDefaultNamespace($default_namespace)
-	->setUseNamespaces($use_namespaces)
-	->setNamespacePrefixes($namespace_prefixes)
-	->setOutputDir($models_output_dir)
-	->setModelToExtend($model_to_extend)
-	->setControllerModelToExtend($controller_model_to_extend)
+	->setPluralTables($config['plural_tables'])
+	->setDefaultNamespace($config['default_namespace'])
+	->setUseNamespaces($config['use_namespaces'])
+	->setNamespacePrefixes($config['namespace_prefixes'])
+	->setOutputDirs($config['models_output_dir'], $config['models_output_dir_map'])
+	->setModelToExtend($config['model_to_extend'])
+	->setControllerModelToExtend($config['controller_model_to_extend'])
+	->setChronosModel($config['chronos_model'])
 	->doBuild();
