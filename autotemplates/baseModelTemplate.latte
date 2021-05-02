@@ -496,4 +496,7 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 		}
 		return $items[$field];
 	}
+{if $custom_baseModel_template}
+{include $custom_baseModel_template}
+{/if}
 }

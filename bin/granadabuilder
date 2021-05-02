@@ -68,6 +68,7 @@ $config = array_merge([
 	'models_output_dir_map' => [],
 	'model_to_extend' => '\MyApp\ORMBaseClass',
 	'controller_model_to_extend' => '\Auto\Controller',
+	'custom_baseModel_template' => '',
 	'use_namespaces' => false,
 	'namespace_prefixes' => [],
 	'default_namespace' => 'MyApp',
@@ -88,4 +89,5 @@ $config = array_merge([
 	->setModelToExtend($config['model_to_extend'])
 	->setControllerModelToExtend($config['controller_model_to_extend'])
 	->setChronosModel($config['chronos_model'])
+	->setCustomBaseModelTemplate($config['custom_baseModel_template'])
 	->doBuild();

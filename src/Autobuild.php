@@ -93,6 +93,7 @@ class Autobuild {
 	private $_models_output_dir_map = [];
 	private $_model_to_extend = '';
 	private $_chronos_model = '';
+	private $_custom_base_model_template = '';
 	private $_controller_model_to_extend = '';
 
 	public function setUseNamespaces($val) {
@@ -128,6 +129,11 @@ class Autobuild {
 
 	public function setChronosModel($val) {
 		$this->_chronos_model = $val;
+		return $this;
+	}
+
+	public function setCustomBaseModelTemplate($val) {
+		$this->_custom_base_model_template = $val;
 		return $this;
 	}
 
@@ -744,6 +750,7 @@ class Autobuild {
 			$tabledata->controllerToExtend = $this->_controller_model_to_extend;
 			$tabledata->modelToExtend = $this->_model_to_extend;
 			$tabledata->chronosModel = $this->_chronos_model;
+			$tabledata->custom_baseModel_template = $this->_custom_base_model_template;
 			if (array_key_exists('sort_order', $tabledata->structure)) {
 				// Check and renumber sort_order columns if found to have zeros
 				$curmax = \Granada\ORM::for_table($table)->max('sort_order');
