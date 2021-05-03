@@ -797,6 +797,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testTimezonesStoredUTC() {
+        date_default_timezone_set('Australia/Brisbane');
 
         $timezoneTest = \MyAppTest\TimezoneTest::model()->find_one(1);
 
@@ -887,6 +888,8 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testTimezonesStoredBrisbane() {
+        date_default_timezone_set('Australia/Brisbane');
+
         $timezoneTest = \MyAppTest\TimezoneTest::model()->find_one(1);
         \Granada\Builder\ExtendedModel::setDatabaseTimezone('Australia/Brisbane');
 
