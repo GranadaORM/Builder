@@ -107,26 +107,24 @@ The build system needs to know where to put the files, how to access the databas
 
 ### Create the config file
 
-Create a config file with contents similar to the following:
+Create a json config file with contents similar to the following:
 
 ```
-
-<?php
-$db_host = 'database';
-$db_name = 'db_name';
-$db_username = 'db_user';
-$db_password = 'db_pass';
-$model_to_extend = '\MyAppCore\ORMBase';
-$models_output_dir = __DIR__ ;
-$controller_model_to_extend = '\MyAppCore\Controller';
-$use_namespaces = false; // If set to true, you don't need the next two and it splits the namespace from the prefix of the table name
-$namespace_prefixes = [
+{
+  "db_host": "database",
+  "db_name": "db_name",
+  "db_username": "db_user",
+  "db_password": "db_pass",
+  "models_output_dir": "Auto",
+  "model_to_extend": "\\MyAppCore\\ORMBaseClass",
+  "controller_model_to_extend": "\\MyAppCore\\Controller",
+  "use_namespaces": false, // If set to true, you don't need the next two and it splits the namespace from the prefix of the table name
+  "default_namespace": "MyAppTest",
+  "namespace_prefixes": [
     'blog', // Blog namespace has table names starting with "blog_"
-];
-$default_namespace = 'MyApp';
-
-$plural_tables = [];
-
+  ],
+  "plural_tables": []
+}
 ```
 
 That config file should be put somewhere that your script can run it. You can see that in the example the output dir is the same directory as the config file.

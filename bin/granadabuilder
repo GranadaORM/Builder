@@ -49,7 +49,7 @@ if (array_key_exists(1, $argv)) {
 if ($show_config_file_template) {
 	fwrite(
 		STDERR,
-		'Create a file with the contents like:' . PHP_EOL . PHP_EOL . file_get_contents(__DIR__ . '/../tests/testdb2modelconf.php')
+		'Create a json file with the contents like:' . PHP_EOL . PHP_EOL . file_get_contents(__DIR__ . '/../tests/testdb2modelconf.json')
 	);
 
 	die(1);
