@@ -3,7 +3,7 @@
 /**
  * This is the base model class for the database table 'timezone_test'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  * If any changes are required, override them in the 'MyAppTest\TimezoneTest' class.
  */
 
@@ -153,7 +153,6 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 */
 	public function ignoreDirtyForTimestamps() {
 		return [
-			'sort_order',
 		];
 	}
 
@@ -194,8 +193,8 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 */
 	public function setAttributes($data) {
 		foreach ($data as $key => $val) {
-			if (\MyAppTest\TimezoneTest::hasAttribute($key) && $this->{$key} !== $val) {
-				$this->{$key} = $val;
+			if (\MyAppTest\TimezoneTest::hasAttribute($key) && $this->$key !== $val) {
+				$this->$key = $val;
 			}
 		}
 		return $this;
@@ -312,7 +311,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the human name of the field.
+	 * Get the human name of the field
 	 * @param string $field the field name
 	 * @return string The field human name
 	 */
@@ -388,12 +387,11 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the field default value
-	 * @param string $field
-	 * @return integer
+	 * Get list of defaults for each field
+	 * @return array
 	 */
-	public function fieldDefaultValue($field) {
-		$items = [
+	public static function defaultValues() {
+		return [
 			'id' => '',
 			'datetime1' => '',
 			'datetime2' => '',
@@ -403,6 +401,15 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 			'date1' => '',
 			'time1' => '',
 		];
+	}
+
+	/**
+	 * Get the field default value
+	 * @param string $field
+	 * @return mixed
+	 */
+	public function fieldDefaultValue($field) {
+		$items = self::defaultValues();
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}

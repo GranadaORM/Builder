@@ -55,6 +55,10 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt({$chronosModel} $value) Add a WHERE {$field->name} < clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte({$chronosModel} $value) Add a WHERE {$field->name} >= clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte({$chronosModel} $value) Add a WHERE {$field->name} <= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gt_or_null({$chronosModel} $value) Add a WHERE {$field->name} > clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt_or_null({$chronosModel} $value) Add a WHERE {$field->name} < clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte_or_null({$chronosModel} $value) Add a WHERE {$field->name} >= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte_or_null({$chronosModel} $value) Add a WHERE {$field->name} <= clause to your query
 {else}
  * @method \{$namespace}\Query{$modelname} where_{$field->name}(string $value) Add a WHERE {$field->name} = clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_not_equal(string $value) Add a WHERE {$field->name} != clause to your query
@@ -64,6 +68,10 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt(string $value) Add a WHERE {$field->name} < clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte(string $value) Add a WHERE {$field->name} >= clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte(string $value) Add a WHERE {$field->name} <= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gt_or_null(string $value) Add a WHERE {$field->name} > clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lt_or_null(string $value) Add a WHERE {$field->name} < clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_gte_or_null(string $value) Add a WHERE {$field->name} >= clause to your query
+ * @method \{$namespace}\Query{$modelname} where_{$field->name}_lte_or_null(string $value) Add a WHERE {$field->name} <= clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_in(string $values) Add a WHERE {$field->name} IN clause to your query
  * @method \{$namespace}\Query{$modelname} where_{$field->name}_not_in(string[] $values) Add a WHERE {$field->name} NOT IN clause to your query
 {/if}

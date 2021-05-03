@@ -3,7 +3,7 @@
 /**
  * This is the base model class for the database table 'car'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  * If any changes are required, override them in the 'MyAppTest\Car' class.
  */
 
@@ -218,8 +218,8 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 */
 	public function setAttributes($data) {
 		foreach ($data as $key => $val) {
-			if (\MyAppTest\Car::hasAttribute($key) && $this->{$key} !== $val) {
-				$this->{$key} = $val;
+			if (\MyAppTest\Car::hasAttribute($key) && $this->$key !== $val) {
+				$this->$key = $val;
 			}
 		}
 		return $this;
@@ -312,7 +312,7 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the human name of the field.
+	 * Get the human name of the field
 	 * @param string $field the field name
 	 * @return string The field human name
 	 */
@@ -391,12 +391,11 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the field default value
-	 * @param string $field
-	 * @return integer
+	 * Get list of defaults for each field
+	 * @return array
 	 */
-	public function fieldDefaultValue($field) {
-		$items = [
+	public static function defaultValues() {
+		return [
 			'id' => '',
 			'name' => '',
 			'manufactor_id' => '',
@@ -408,6 +407,15 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 			'created_at' => '',
 			'updated_at' => '',
 		];
+	}
+
+	/**
+	 * Get the field default value
+	 * @param string $field
+	 * @return mixed
+	 */
+	public function fieldDefaultValue($field) {
+		$items = self::defaultValues();
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}

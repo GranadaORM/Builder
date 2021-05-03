@@ -3,14 +3,21 @@
 /**
  * This is the base model class for the database table 'car'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  */
 
 namespace MyAppTest;
 
 /**
  *
- * @method \MyAppTest\Car find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method string[] find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method array find_pairs(string|null $key, string|null $value) Gets data in array form, as pairs of data for each row in the results. The key and value are the database column to use as the array keys and values
+ * @method boolean delete_many() Delete all matching records
+ * @method integer count(string $column) Get the count of the column
+ * @method string max(string $column) Will return the max value of the chosen column.
+ * @method string min(string $column) Will return the min value of the chosen column.
+ * @method string avg(string $column) Will return the average value of the chosen column.
+ * @method string sum(string $column) Will return the sum of the values of the chosen column.
  * @method \MyAppTest\Car find_one(integer $id) Find one matching record. If $id is set, get the pk record
  * @method \MyAppTest\Car[] find_many() Find all matching records
  * @method \MyAppTest\QueryCar raw_query(string $query, array $parameters) Perform a raw query. The query can contain placeholders in either named or question mark style. If placeholders are used, the parameters should be an array of values which will be bound to the placeholders in the query. If this method is called, all other query building methods will be ignored.
@@ -48,6 +55,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_id_lt(string $value) Add a WHERE id < clause to your query
  * @method \MyAppTest\QueryCar where_id_gte(string $value) Add a WHERE id >= clause to your query
  * @method \MyAppTest\QueryCar where_id_lte(string $value) Add a WHERE id <= clause to your query
+ * @method \MyAppTest\QueryCar where_id_gt_or_null(string $value) Add a WHERE id > clause to your query
+ * @method \MyAppTest\QueryCar where_id_lt_or_null(string $value) Add a WHERE id < clause to your query
+ * @method \MyAppTest\QueryCar where_id_gte_or_null(string $value) Add a WHERE id >= clause to your query
+ * @method \MyAppTest\QueryCar where_id_lte_or_null(string $value) Add a WHERE id <= clause to your query
  * @method \MyAppTest\QueryCar where_id_in(string $values) Add a WHERE id IN clause to your query
  * @method \MyAppTest\QueryCar where_id_not_in(string[] $values) Add a WHERE id NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_id_null() Add a WHERE id IS NULL clause to your query
@@ -60,6 +71,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_name_lt(string $value) Add a WHERE name < clause to your query
  * @method \MyAppTest\QueryCar where_name_gte(string $value) Add a WHERE name >= clause to your query
  * @method \MyAppTest\QueryCar where_name_lte(string $value) Add a WHERE name <= clause to your query
+ * @method \MyAppTest\QueryCar where_name_gt_or_null(string $value) Add a WHERE name > clause to your query
+ * @method \MyAppTest\QueryCar where_name_lt_or_null(string $value) Add a WHERE name < clause to your query
+ * @method \MyAppTest\QueryCar where_name_gte_or_null(string $value) Add a WHERE name >= clause to your query
+ * @method \MyAppTest\QueryCar where_name_lte_or_null(string $value) Add a WHERE name <= clause to your query
  * @method \MyAppTest\QueryCar where_name_in(string $values) Add a WHERE name IN clause to your query
  * @method \MyAppTest\QueryCar where_name_not_in(string[] $values) Add a WHERE name NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_name_null() Add a WHERE name IS NULL clause to your query
@@ -72,6 +87,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_manufactor_id_lt(string $value) Add a WHERE manufactor_id < clause to your query
  * @method \MyAppTest\QueryCar where_manufactor_id_gte(string $value) Add a WHERE manufactor_id >= clause to your query
  * @method \MyAppTest\QueryCar where_manufactor_id_lte(string $value) Add a WHERE manufactor_id <= clause to your query
+ * @method \MyAppTest\QueryCar where_manufactor_id_gt_or_null(string $value) Add a WHERE manufactor_id > clause to your query
+ * @method \MyAppTest\QueryCar where_manufactor_id_lt_or_null(string $value) Add a WHERE manufactor_id < clause to your query
+ * @method \MyAppTest\QueryCar where_manufactor_id_gte_or_null(string $value) Add a WHERE manufactor_id >= clause to your query
+ * @method \MyAppTest\QueryCar where_manufactor_id_lte_or_null(string $value) Add a WHERE manufactor_id <= clause to your query
  * @method \MyAppTest\QueryCar where_manufactor_id_in(string $values) Add a WHERE manufactor_id IN clause to your query
  * @method \MyAppTest\QueryCar where_manufactor_id_not_in(string[] $values) Add a WHERE manufactor_id NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_manufactor_id_null() Add a WHERE manufactor_id IS NULL clause to your query
@@ -84,6 +103,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_owner_id_lt(string $value) Add a WHERE owner_id < clause to your query
  * @method \MyAppTest\QueryCar where_owner_id_gte(string $value) Add a WHERE owner_id >= clause to your query
  * @method \MyAppTest\QueryCar where_owner_id_lte(string $value) Add a WHERE owner_id <= clause to your query
+ * @method \MyAppTest\QueryCar where_owner_id_gt_or_null(string $value) Add a WHERE owner_id > clause to your query
+ * @method \MyAppTest\QueryCar where_owner_id_lt_or_null(string $value) Add a WHERE owner_id < clause to your query
+ * @method \MyAppTest\QueryCar where_owner_id_gte_or_null(string $value) Add a WHERE owner_id >= clause to your query
+ * @method \MyAppTest\QueryCar where_owner_id_lte_or_null(string $value) Add a WHERE owner_id <= clause to your query
  * @method \MyAppTest\QueryCar where_owner_id_in(string $values) Add a WHERE owner_id IN clause to your query
  * @method \MyAppTest\QueryCar where_owner_id_not_in(string[] $values) Add a WHERE owner_id NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_owner_id_null() Add a WHERE owner_id IS NULL clause to your query
@@ -96,6 +119,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_enabled_lt(string $value) Add a WHERE enabled < clause to your query
  * @method \MyAppTest\QueryCar where_enabled_gte(string $value) Add a WHERE enabled >= clause to your query
  * @method \MyAppTest\QueryCar where_enabled_lte(string $value) Add a WHERE enabled <= clause to your query
+ * @method \MyAppTest\QueryCar where_enabled_gt_or_null(string $value) Add a WHERE enabled > clause to your query
+ * @method \MyAppTest\QueryCar where_enabled_lt_or_null(string $value) Add a WHERE enabled < clause to your query
+ * @method \MyAppTest\QueryCar where_enabled_gte_or_null(string $value) Add a WHERE enabled >= clause to your query
+ * @method \MyAppTest\QueryCar where_enabled_lte_or_null(string $value) Add a WHERE enabled <= clause to your query
  * @method \MyAppTest\QueryCar where_enabled_in(string $values) Add a WHERE enabled IN clause to your query
  * @method \MyAppTest\QueryCar where_enabled_not_in(string[] $values) Add a WHERE enabled NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_enabled_null() Add a WHERE enabled IS NULL clause to your query
@@ -108,6 +135,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_stealth_lt(string $value) Add a WHERE stealth < clause to your query
  * @method \MyAppTest\QueryCar where_stealth_gte(string $value) Add a WHERE stealth >= clause to your query
  * @method \MyAppTest\QueryCar where_stealth_lte(string $value) Add a WHERE stealth <= clause to your query
+ * @method \MyAppTest\QueryCar where_stealth_gt_or_null(string $value) Add a WHERE stealth > clause to your query
+ * @method \MyAppTest\QueryCar where_stealth_lt_or_null(string $value) Add a WHERE stealth < clause to your query
+ * @method \MyAppTest\QueryCar where_stealth_gte_or_null(string $value) Add a WHERE stealth >= clause to your query
+ * @method \MyAppTest\QueryCar where_stealth_lte_or_null(string $value) Add a WHERE stealth <= clause to your query
  * @method \MyAppTest\QueryCar where_stealth_in(string $values) Add a WHERE stealth IN clause to your query
  * @method \MyAppTest\QueryCar where_stealth_not_in(string[] $values) Add a WHERE stealth NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_stealth_null() Add a WHERE stealth IS NULL clause to your query
@@ -120,6 +151,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_is_deleted_lt(string $value) Add a WHERE is_deleted < clause to your query
  * @method \MyAppTest\QueryCar where_is_deleted_gte(string $value) Add a WHERE is_deleted >= clause to your query
  * @method \MyAppTest\QueryCar where_is_deleted_lte(string $value) Add a WHERE is_deleted <= clause to your query
+ * @method \MyAppTest\QueryCar where_is_deleted_gt_or_null(string $value) Add a WHERE is_deleted > clause to your query
+ * @method \MyAppTest\QueryCar where_is_deleted_lt_or_null(string $value) Add a WHERE is_deleted < clause to your query
+ * @method \MyAppTest\QueryCar where_is_deleted_gte_or_null(string $value) Add a WHERE is_deleted >= clause to your query
+ * @method \MyAppTest\QueryCar where_is_deleted_lte_or_null(string $value) Add a WHERE is_deleted <= clause to your query
  * @method \MyAppTest\QueryCar where_is_deleted_in(string $values) Add a WHERE is_deleted IN clause to your query
  * @method \MyAppTest\QueryCar where_is_deleted_not_in(string[] $values) Add a WHERE is_deleted NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_is_deleted_null() Add a WHERE is_deleted IS NULL clause to your query
@@ -132,6 +167,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_sort_order_lt(string $value) Add a WHERE sort_order < clause to your query
  * @method \MyAppTest\QueryCar where_sort_order_gte(string $value) Add a WHERE sort_order >= clause to your query
  * @method \MyAppTest\QueryCar where_sort_order_lte(string $value) Add a WHERE sort_order <= clause to your query
+ * @method \MyAppTest\QueryCar where_sort_order_gt_or_null(string $value) Add a WHERE sort_order > clause to your query
+ * @method \MyAppTest\QueryCar where_sort_order_lt_or_null(string $value) Add a WHERE sort_order < clause to your query
+ * @method \MyAppTest\QueryCar where_sort_order_gte_or_null(string $value) Add a WHERE sort_order >= clause to your query
+ * @method \MyAppTest\QueryCar where_sort_order_lte_or_null(string $value) Add a WHERE sort_order <= clause to your query
  * @method \MyAppTest\QueryCar where_sort_order_in(string $values) Add a WHERE sort_order IN clause to your query
  * @method \MyAppTest\QueryCar where_sort_order_not_in(string[] $values) Add a WHERE sort_order NOT IN clause to your query
  * @method \MyAppTest\QueryCar where_sort_order_null() Add a WHERE sort_order IS NULL clause to your query
@@ -142,6 +181,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_created_at_lt(\Cake\Chronos\Chronos $value) Add a WHERE created_at < clause to your query
  * @method \MyAppTest\QueryCar where_created_at_gte(\Cake\Chronos\Chronos $value) Add a WHERE created_at >= clause to your query
  * @method \MyAppTest\QueryCar where_created_at_lte(\Cake\Chronos\Chronos $value) Add a WHERE created_at <= clause to your query
+ * @method \MyAppTest\QueryCar where_created_at_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE created_at > clause to your query
+ * @method \MyAppTest\QueryCar where_created_at_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE created_at < clause to your query
+ * @method \MyAppTest\QueryCar where_created_at_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE created_at >= clause to your query
+ * @method \MyAppTest\QueryCar where_created_at_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE created_at <= clause to your query
  * @method \MyAppTest\QueryCar where_created_at_null() Add a WHERE created_at IS NULL clause to your query
  * @method \MyAppTest\QueryCar where_created_at_not_null() Add a WHERE created_at IS NOT NULL clause to your query
  * @method \MyAppTest\QueryCar where_updated_at(\Cake\Chronos\Chronos $value) Add a WHERE updated_at = clause to your query
@@ -150,6 +193,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar where_updated_at_lt(\Cake\Chronos\Chronos $value) Add a WHERE updated_at < clause to your query
  * @method \MyAppTest\QueryCar where_updated_at_gte(\Cake\Chronos\Chronos $value) Add a WHERE updated_at >= clause to your query
  * @method \MyAppTest\QueryCar where_updated_at_lte(\Cake\Chronos\Chronos $value) Add a WHERE updated_at <= clause to your query
+ * @method \MyAppTest\QueryCar where_updated_at_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE updated_at > clause to your query
+ * @method \MyAppTest\QueryCar where_updated_at_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE updated_at < clause to your query
+ * @method \MyAppTest\QueryCar where_updated_at_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE updated_at >= clause to your query
+ * @method \MyAppTest\QueryCar where_updated_at_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE updated_at <= clause to your query
  * @method \MyAppTest\QueryCar where_updated_at_null() Add a WHERE updated_at IS NULL clause to your query
  * @method \MyAppTest\QueryCar where_updated_at_not_null() Add a WHERE updated_at IS NOT NULL clause to your query
  * @method \MyAppTest\QueryCar where_raw(string $clause, array $parameters = NULL) Add a raw WHERE clause to the query. The clause should contain question mark placeholders, which will be bound to the parameters supplied in the second argument.
@@ -198,6 +245,7 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryCar order_by_rand() Fetch items in a random order. Use sparingly and ensure a LIMIT is placed
  * @method \MyAppTest\QueryCar order_by_expr(string $clause) Add an unquoted expression as an ORDER BY clause
  * @method \MyAppTest\QueryCar order_by_list(string $column_name, integer[] $list) Add an ORDER BY FIELD column clause to make the ordering a specific sequence
+ * @method \MyAppTest\QueryCar defaultFilter()
  * @method \MyAppTest\QueryCar onlyif(bool $condition, callable $query) Add a WHERE, ORDER BY or LIMIT clause only if the condition is true
  */
 

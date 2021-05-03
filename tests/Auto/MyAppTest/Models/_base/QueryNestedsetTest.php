@@ -3,14 +3,21 @@
 /**
  * This is the base model class for the database table 'nestedset_test'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  */
 
 namespace MyAppTest;
 
 /**
  *
- * @method \MyAppTest\NestedsetTest find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method string[] find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method array find_pairs(string|null $key, string|null $value) Gets data in array form, as pairs of data for each row in the results. The key and value are the database column to use as the array keys and values
+ * @method boolean delete_many() Delete all matching records
+ * @method integer count(string $column) Get the count of the column
+ * @method string max(string $column) Will return the max value of the chosen column.
+ * @method string min(string $column) Will return the min value of the chosen column.
+ * @method string avg(string $column) Will return the average value of the chosen column.
+ * @method string sum(string $column) Will return the sum of the values of the chosen column.
  * @method \MyAppTest\NestedsetTest find_one(integer $id) Find one matching record. If $id is set, get the pk record
  * @method \MyAppTest\NestedsetTest[] find_many() Find all matching records
  * @method \MyAppTest\QueryNestedsetTest raw_query(string $query, array $parameters) Perform a raw query. The query can contain placeholders in either named or question mark style. If placeholders are used, the parameters should be an array of values which will be bound to the placeholders in the query. If this method is called, all other query building methods will be ignored.
@@ -48,6 +55,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_id_lt(string $value) Add a WHERE id < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_id_gte(string $value) Add a WHERE id >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_id_lte(string $value) Add a WHERE id <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_id_gt_or_null(string $value) Add a WHERE id > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_id_lt_or_null(string $value) Add a WHERE id < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_id_gte_or_null(string $value) Add a WHERE id >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_id_lte_or_null(string $value) Add a WHERE id <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_id_in(string $values) Add a WHERE id IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_id_not_in(string[] $values) Add a WHERE id NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_id_null() Add a WHERE id IS NULL clause to your query
@@ -60,6 +71,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_name_lt(string $value) Add a WHERE name < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_name_gte(string $value) Add a WHERE name >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_name_lte(string $value) Add a WHERE name <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_name_gt_or_null(string $value) Add a WHERE name > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_name_lt_or_null(string $value) Add a WHERE name < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_name_gte_or_null(string $value) Add a WHERE name >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_name_lte_or_null(string $value) Add a WHERE name <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_name_in(string $values) Add a WHERE name IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_name_not_in(string[] $values) Add a WHERE name NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_name_null() Add a WHERE name IS NULL clause to your query
@@ -72,6 +87,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_root_lt(string $value) Add a WHERE root < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_root_gte(string $value) Add a WHERE root >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_root_lte(string $value) Add a WHERE root <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_root_gt_or_null(string $value) Add a WHERE root > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_root_lt_or_null(string $value) Add a WHERE root < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_root_gte_or_null(string $value) Add a WHERE root >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_root_lte_or_null(string $value) Add a WHERE root <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_root_in(string $values) Add a WHERE root IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_root_not_in(string[] $values) Add a WHERE root NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_root_null() Add a WHERE root IS NULL clause to your query
@@ -84,6 +103,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_level_lt(string $value) Add a WHERE level < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_level_gte(string $value) Add a WHERE level >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_level_lte(string $value) Add a WHERE level <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_level_gt_or_null(string $value) Add a WHERE level > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_level_lt_or_null(string $value) Add a WHERE level < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_level_gte_or_null(string $value) Add a WHERE level >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_level_lte_or_null(string $value) Add a WHERE level <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_level_in(string $values) Add a WHERE level IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_level_not_in(string[] $values) Add a WHERE level NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_level_null() Add a WHERE level IS NULL clause to your query
@@ -96,6 +119,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_lft_lt(string $value) Add a WHERE lft < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_lft_gte(string $value) Add a WHERE lft >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_lft_lte(string $value) Add a WHERE lft <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_lft_gt_or_null(string $value) Add a WHERE lft > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_lft_lt_or_null(string $value) Add a WHERE lft < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_lft_gte_or_null(string $value) Add a WHERE lft >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_lft_lte_or_null(string $value) Add a WHERE lft <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_lft_in(string $values) Add a WHERE lft IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_lft_not_in(string[] $values) Add a WHERE lft NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_lft_null() Add a WHERE lft IS NULL clause to your query
@@ -108,6 +135,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest where_rgt_lt(string $value) Add a WHERE rgt < clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_rgt_gte(string $value) Add a WHERE rgt >= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_rgt_lte(string $value) Add a WHERE rgt <= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_rgt_gt_or_null(string $value) Add a WHERE rgt > clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_rgt_lt_or_null(string $value) Add a WHERE rgt < clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_rgt_gte_or_null(string $value) Add a WHERE rgt >= clause to your query
+ * @method \MyAppTest\QueryNestedsetTest where_rgt_lte_or_null(string $value) Add a WHERE rgt <= clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_rgt_in(string $values) Add a WHERE rgt IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_rgt_not_in(string[] $values) Add a WHERE rgt NOT IN clause to your query
  * @method \MyAppTest\QueryNestedsetTest where_rgt_null() Add a WHERE rgt IS NULL clause to your query
@@ -142,6 +173,7 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryNestedsetTest order_by_rand() Fetch items in a random order. Use sparingly and ensure a LIMIT is placed
  * @method \MyAppTest\QueryNestedsetTest order_by_expr(string $clause) Add an unquoted expression as an ORDER BY clause
  * @method \MyAppTest\QueryNestedsetTest order_by_list(string $column_name, integer[] $list) Add an ORDER BY FIELD column clause to make the ordering a specific sequence
+ * @method \MyAppTest\QueryNestedsetTest defaultFilter()
  * @method \MyAppTest\QueryNestedsetTest onlyif(bool $condition, callable $query) Add a WHERE, ORDER BY or LIMIT clause only if the condition is true
  */
 

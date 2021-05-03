@@ -3,14 +3,21 @@
 /**
  * This is the base model class for the database table 'timezone_test'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  */
 
 namespace MyAppTest;
 
 /**
  *
- * @method \MyAppTest\TimezoneTest find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method string[] find_pairs_representation(integer $limit) List of items in an array using the representation string
+ * @method array find_pairs(string|null $key, string|null $value) Gets data in array form, as pairs of data for each row in the results. The key and value are the database column to use as the array keys and values
+ * @method boolean delete_many() Delete all matching records
+ * @method integer count(string $column) Get the count of the column
+ * @method string max(string $column) Will return the max value of the chosen column.
+ * @method string min(string $column) Will return the min value of the chosen column.
+ * @method string avg(string $column) Will return the average value of the chosen column.
+ * @method string sum(string $column) Will return the sum of the values of the chosen column.
  * @method \MyAppTest\TimezoneTest find_one(integer $id) Find one matching record. If $id is set, get the pk record
  * @method \MyAppTest\TimezoneTest[] find_many() Find all matching records
  * @method \MyAppTest\QueryTimezoneTest raw_query(string $query, array $parameters) Perform a raw query. The query can contain placeholders in either named or question mark style. If placeholders are used, the parameters should be an array of values which will be bound to the placeholders in the query. If this method is called, all other query building methods will be ignored.
@@ -48,6 +55,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_id_lt(string $value) Add a WHERE id < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_id_gte(string $value) Add a WHERE id >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_id_lte(string $value) Add a WHERE id <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_id_gt_or_null(string $value) Add a WHERE id > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_id_lt_or_null(string $value) Add a WHERE id < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_id_gte_or_null(string $value) Add a WHERE id >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_id_lte_or_null(string $value) Add a WHERE id <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_id_in(string $values) Add a WHERE id IN clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_id_not_in(string[] $values) Add a WHERE id NOT IN clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_id_null() Add a WHERE id IS NULL clause to your query
@@ -58,6 +69,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_datetime1_lt(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime1_gte(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime1_lte(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime1_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime1_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime1_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime1_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime1 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime1_null() Add a WHERE datetime1 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime1_not_null() Add a WHERE datetime1 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime2(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 = clause to your query
@@ -66,6 +81,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_datetime2_lt(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime2_gte(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime2_lte(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime2_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime2_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime2_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime2_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime2 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime2_null() Add a WHERE datetime2 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime2_not_null() Add a WHERE datetime2 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime3(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 = clause to your query
@@ -74,6 +93,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_datetime3_lt(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime3_gte(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime3_lte(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime3_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime3_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime3_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime3_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime3 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime3_null() Add a WHERE datetime3 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime3_not_null() Add a WHERE datetime3 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime4(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 = clause to your query
@@ -82,6 +105,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_datetime4_lt(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime4_gte(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime4_lte(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime4_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime4_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime4_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime4_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime4 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime4_null() Add a WHERE datetime4 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime4_not_null() Add a WHERE datetime4 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime5(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 = clause to your query
@@ -90,6 +117,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_datetime5_lt(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime5_gte(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime5_lte(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime5_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime5_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime5_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_datetime5_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE datetime5 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime5_null() Add a WHERE datetime5 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_datetime5_not_null() Add a WHERE datetime5 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_date1(\Cake\Chronos\Chronos $value) Add a WHERE date1 = clause to your query
@@ -98,6 +129,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_date1_lt(\Cake\Chronos\Chronos $value) Add a WHERE date1 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_date1_gte(\Cake\Chronos\Chronos $value) Add a WHERE date1 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_date1_lte(\Cake\Chronos\Chronos $value) Add a WHERE date1 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_date1_gt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE date1 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_date1_lt_or_null(\Cake\Chronos\Chronos $value) Add a WHERE date1 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_date1_gte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE date1 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_date1_lte_or_null(\Cake\Chronos\Chronos $value) Add a WHERE date1 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_date1_null() Add a WHERE date1 IS NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_date1_not_null() Add a WHERE date1 IS NOT NULL clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1(string $value) Add a WHERE time1 = clause to your query
@@ -108,6 +143,10 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest where_time1_lt(string $value) Add a WHERE time1 < clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1_gte(string $value) Add a WHERE time1 >= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1_lte(string $value) Add a WHERE time1 <= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_time1_gt_or_null(string $value) Add a WHERE time1 > clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_time1_lt_or_null(string $value) Add a WHERE time1 < clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_time1_gte_or_null(string $value) Add a WHERE time1 >= clause to your query
+ * @method \MyAppTest\QueryTimezoneTest where_time1_lte_or_null(string $value) Add a WHERE time1 <= clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1_in(string $values) Add a WHERE time1 IN clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1_not_in(string[] $values) Add a WHERE time1 NOT IN clause to your query
  * @method \MyAppTest\QueryTimezoneTest where_time1_null() Add a WHERE time1 IS NULL clause to your query
@@ -150,6 +189,7 @@ namespace MyAppTest;
  * @method \MyAppTest\QueryTimezoneTest order_by_rand() Fetch items in a random order. Use sparingly and ensure a LIMIT is placed
  * @method \MyAppTest\QueryTimezoneTest order_by_expr(string $clause) Add an unquoted expression as an ORDER BY clause
  * @method \MyAppTest\QueryTimezoneTest order_by_list(string $column_name, integer[] $list) Add an ORDER BY FIELD column clause to make the ordering a specific sequence
+ * @method \MyAppTest\QueryTimezoneTest defaultFilter()
  * @method \MyAppTest\QueryTimezoneTest onlyif(bool $condition, callable $query) Add a WHERE, ORDER BY or LIMIT clause only if the condition is true
  */
 

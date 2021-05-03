@@ -694,6 +694,38 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(7, $car->sort_order);
     }
 
+    public function testVarnameLtOrNULL() {
+        $cars = \MyAppTest\Car::model()->where_owner_id_lt_or_null(15)
+            ->find_many();
+
+        $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` < '15' OR `owner_id` IS NULL )";
+        $this->assertSame($expectedSql, Orm::get_last_query());
+    }
+
+    public function testVarnameLteOrNULL() {
+        $cars = \MyAppTest\Car::model()->where_owner_id_lte_or_null(15)
+            ->find_many();
+
+        $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` <= '15' OR `owner_id` IS NULL )";
+        $this->assertSame($expectedSql, Orm::get_last_query());
+    }
+
+    public function testVarnameGtOrNULL() {
+        $cars = \MyAppTest\Car::model()->where_owner_id_gt_or_null(15)
+            ->find_many();
+
+        $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` > '15' OR `owner_id` IS NULL )";
+        $this->assertSame($expectedSql, Orm::get_last_query());
+    }
+
+    public function testVarnameGteOrNULL() {
+        $cars = \MyAppTest\Car::model()->where_owner_id_gte_or_null(15)
+            ->find_many();
+
+        $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` >= '15' OR `owner_id` IS NULL )";
+        $this->assertSame($expectedSql, Orm::get_last_query());
+    }
+
     public function testTimezoneInWhere() {
         $cars = \MyAppTest\Car::model()->where_created_at_gt(\Cake\Chronos\Chronos::now()->addHour())
             ->find_many();

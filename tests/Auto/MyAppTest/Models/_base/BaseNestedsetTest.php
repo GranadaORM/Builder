@@ -3,7 +3,7 @@
 /**
  * This is the base model class for the database table 'nestedset_test'
  *
- * Do not modify this file, it is overwritten via the db2model script
+ * Do not modify this file, it is overwritten via the granadabuilder script
  * If any changes are required, override them in the 'MyAppTest\NestedsetTest' class.
  */
 
@@ -142,7 +142,6 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 	 */
 	public function ignoreDirtyForTimestamps() {
 		return [
-			'sort_order',
 		];
 	}
 
@@ -181,8 +180,8 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 	 */
 	public function setAttributes($data) {
 		foreach ($data as $key => $val) {
-			if (\MyAppTest\NestedsetTest::hasAttribute($key) && $this->{$key} !== $val) {
-				$this->{$key} = $val;
+			if (\MyAppTest\NestedsetTest::hasAttribute($key) && $this->$key !== $val) {
+				$this->$key = $val;
 			}
 		}
 		return $this;
@@ -249,7 +248,7 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the human name of the field.
+	 * Get the human name of the field
 	 * @param string $field the field name
 	 * @return string The field human name
 	 */
@@ -310,12 +309,11 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 	}
 
 	/**
-	 * Get the field default value
-	 * @param string $field
-	 * @return integer
+	 * Get list of defaults for each field
+	 * @return array
 	 */
-	public function fieldDefaultValue($field) {
-		$items = [
+	public static function defaultValues() {
+		return [
 			'id' => '',
 			'name' => '',
 			'root' => '',
@@ -323,6 +321,15 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 			'lft' => '',
 			'rgt' => '',
 		];
+	}
+
+	/**
+	 * Get the field default value
+	 * @param string $field
+	 * @return mixed
+	 */
+	public function fieldDefaultValue($field) {
+		$items = self::defaultValues();
 		if (!array_key_exists($field, $items)) {
 			return 0;
 		}

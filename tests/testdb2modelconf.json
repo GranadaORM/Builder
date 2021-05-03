@@ -1,0 +1,12 @@
+{
+  "db_host": "database",
+  "db_name": "testdb",
+  "db_username": "root",
+  "db_password": "root",
+  "models_output_dir": "tests/Auto",
+  "model_to_extend": "\\MyAppTest\\ORMBaseClass",
+  "controller_model_to_extend": "\\MyAppTest\\Controller",
+  "use_namespaces": false,
+  "default_namespace": "MyAppTest",
+  "plural_tables": []
+}
