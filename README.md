@@ -1,6 +1,8 @@
 # Builder
 Class builder for models and controllers for the Granada ORM
 
+[![Build Status](https://travis-ci.com/GranadaORM/Builder.svg?branch=master)](https://travis-ci.com/GranadaORM/Builder)
+
 ## Installation
 
 Install easily with composer:
