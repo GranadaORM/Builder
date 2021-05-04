@@ -104,6 +104,15 @@ CREATE TABLE `nestedset_test` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `datatype_test`;
+CREATE TABLE `datatype_test` (
+  `id` int(11) NOT NULL,
+  `data_json` text DEFAULT NULL COMMENT "_json",
+  `data_serialize` text DEFAULT NULL COMMENT "_serialize",
+  `data_string` varchar(190) DEFAULT "Default String",
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `timezone_test`;
 CREATE TABLE `timezone_test` (
   `id` int(11) NOT NULL,

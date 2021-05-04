@@ -58,6 +58,17 @@ abstract class ExtendedModel extends \Granada\Model {
     }
 
     public function __get($property) {
+        // Auto-decode json and serialized variables if using the _decoded suffix
+        if (!$this->hasAttribute($property) && substr($property, -8) == '_decoded') {
+            $propertybase = substr($property, 0, -8);
+            $fieldType = $this->fieldType($propertybase);
+            if ($fieldType == 'json') {
+                return json_decode($this->$propertybase, true);
+            }
+            if ($fieldType == 'serialize') {
+                return unserialize($this->$propertybase);
+            }
+        }
         // Auto-get Chronos variable type
         if (substr($property, -8) == '_chronos') {
             $propertybase = substr($property, 0, -8);
@@ -128,6 +139,7 @@ abstract class ExtendedModel extends \Granada\Model {
 
     public function __set($property, $value) {
         $datetype = $this->datetype($property);
+        $fieldtype = $this->fieldType($property);
         if ($datetype) {
             $class = get_class($this);
             if (is_a($value, '\Cake\Chronos\Chronos')) {
@@ -171,10 +183,51 @@ abstract class ExtendedModel extends \Granada\Model {
             }
         }
         // Handle empty value for references
-        if (!$value && $this->fieldType($property) == 'reference') {
+        if (!$value && $fieldtype == 'reference') {
             $value = null;
         }
+        // Handle storing data json encoded
+        if ($fieldtype == 'json') {
+            $value = json_encode($value);
+        }
+        // Handle storing data serialized
+        if ($fieldtype == 'serialize') {
+            $value = serialize($value);
+        }
         return parent::__set($property, $value);
+    }
+
+    /**
+     * Create a new item, prefilled with data.
+     * This function fills with default values as well, and uses
+     * the magic __set() function to handle datatypes that are not
+     * database native.
+     * @param array $data
+     * @return self
+     */
+    public static function create($data = []) {
+        $model = parent::create();
+		if (!is_array($data)) {
+			$data = array();
+		}
+		foreach ($model->defaultValues() as $field => $defaultValue) {
+			if ($field == 'created_at') {
+				continue;
+			}
+			if ($defaultValue === '') {
+				continue;
+			}
+			if (!array_key_exists($field, $data)) {
+                $model->$field = $defaultValue;
+			}
+		}
+		foreach ($data as $key => $val) {
+			if (!$model->hasAttribute($key)) {
+                continue;
+			}
+            $model->$key = $val;
+		}
+        return $model;
     }
 
     public function datefields() {

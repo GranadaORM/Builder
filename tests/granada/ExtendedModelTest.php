@@ -73,6 +73,39 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(7, $car->id);
     }
 
+    public function testSetAndGetJson() {
+        $data_json = [
+            'line 1',
+            'line 2',
+        ];
+        $datatypeTest = \MyAppTest\DatatypeTest::create([
+            'data_json' => $data_json,
+        ])->save();
+
+        $this->assertSame(1, $datatypeTest->id);
+        $this->assertSame('["line 1","line 2"]', $datatypeTest->data_json);
+        $this->assertSame($data_json, $datatypeTest->data_json_decoded);
+    }
+
+    public function testSetAndGetSerialized() {
+        $data_serialize = [
+            'line 1',
+            'line 2',
+        ];
+        $datatypeTest = \MyAppTest\DatatypeTest::create([
+            'data_serialize' => $data_serialize,
+        ])->save();
+
+        $this->assertSame(1, $datatypeTest->id);
+        $this->assertSame('a:2:{i:0;s:6:"line 1";i:1;s:6:"line 2";}', $datatypeTest->data_serialize);
+        $this->assertSame($data_serialize, $datatypeTest->data_serialize_decoded);
+    }
+
+    public function testDefaultValue() {
+        $datatypeTest = \MyAppTest\DatatypeTest::create()->save();
+        $this->assertSame('Default String', $datatypeTest->data_string);
+    }
+
     public function testSetterForRelationship() {
         $car = \MyAppTest\Car::model()
             ->with('manufactor')
@@ -507,7 +540,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         ));
         $count = \MyAppTest\Car::model()->count();
         $expectedSql   = array();
-        $expectedSql[] = "INSERT INTO `car` (`id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('20', 'Car20', '1', '1', '0', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
+        $expectedSql[] = "INSERT INTO `car` (`enabled`, `stealth`, `id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('1', '0', '20', 'Car20', '1', '1', '0', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
         $expectedSql[] = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `id` = '20' LIMIT 1";
         $expectedSql[] = "SELECT COUNT(*) AS `count` FROM `car` WHERE `car`.`is_deleted` = '0' LIMIT 1";
 
@@ -532,7 +565,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         ));
         $count = \MyAppTest\Car::model()->count();
         $expectedSql   = array();
-        $expectedSql[] = "INSERT INTO `car` (`id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('20', 'Car20', '1', '1', '1', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
+        $expectedSql[] = "INSERT INTO `car` (`enabled`, `stealth`, `id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('1', '0', '20', 'Car20', '1', '1', '1', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
         $expectedSql[] = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `id` = '20' LIMIT 1";
         $expectedSql[] = "SELECT COUNT(*) AS `count` FROM `car` WHERE `car`.`is_deleted` = '0' LIMIT 1";
 
@@ -643,7 +676,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
 
         $expectedSql   = array();
         // Stores datetime in UTC timezone
-        $expectedSql[] = "INSERT INTO `car` (`name`, `sort_order`, `updated_at`, `created_at`) VALUES ('Test', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
+        $expectedSql[] = "INSERT INTO `car` (`enabled`, `stealth`, `is_deleted`, `name`, `sort_order`, `updated_at`, `created_at`) VALUES ('1', '0', '1', 'Test', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
         $expectedSql[] = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `id` = '7' LIMIT 1";
 
         $fullQueryLog = ORM::get_query_log();

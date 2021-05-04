@@ -57,6 +57,13 @@ CREATE TABLE timezone_test (
     time1 TIME
 );
 
+CREATE TABLE datatype_test (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    data_json TEXT,
+    data_serialize TEXT,
+    data_string TEXT
+);
+
 INSERT INTO manufactor(id,name) VALUES (1, 'Manufactor1');
 INSERT INTO manufactor(id,name) VALUES (2, 'Manufactor2');
 
