@@ -8,7 +8,7 @@ use Granada\Orm;
  */
 class ExtendedModelTest extends PHPUnit_Framework_TestCase {
 
-    public function setUp() {
+    protected function setUp(): void {
         \Cake\Chronos\Chronos::setTestNow(\Cake\Chronos\Chronos::parse('2020-08-10 22:33:52', 'UTC'));
 
         spl_autoload_register(function ($classname) {
@@ -41,7 +41,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         \Granada\Builder\ExtendedModel::setDatabaseTimezone('Etc/UTC');
     }
 
-    public function tearDown() {
+    protected function tearDown(): void {
         ORM::configure('logging', false);
         ORM::set_db(null);
     }
