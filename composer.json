@@ -28,6 +28,7 @@
         }
     ],
     "scripts": {
+        "setup_test": "./bin/granadabuilder tests/testdb2modelconf.json",
         "test": "phpunit"
     },
     "bin": [
