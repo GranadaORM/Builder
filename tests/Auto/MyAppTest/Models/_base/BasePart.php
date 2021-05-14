@@ -24,11 +24,11 @@ abstract class BasePart extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryPart
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\Part');
+		return \Granada\Granada::factory(\MyAppTest\Part::class);
 	}
 
     public function carParts() {
-        return $this->has_many('MyAppTest\CarPart', 'part_id')->defaultFilter()->order_by_expr(\MyAppTest\CarPart::defaultOrder());
+        return $this->has_many(\MyAppTest\CarPart::class, 'part_id')->defaultFilter()->order_by_expr(\MyAppTest\CarPart::defaultOrder());
     }
 
     /**

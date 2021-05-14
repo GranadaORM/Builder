@@ -24,11 +24,11 @@ abstract class BaseManufactor extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryManufactor
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\Manufactor');
+		return \Granada\Granada::factory(\MyAppTest\Manufactor::class);
 	}
 
     public function cars() {
-        return $this->has_many('MyAppTest\Car', 'manufactor_id')->defaultFilter()->order_by_expr(\MyAppTest\Car::defaultOrder());
+        return $this->has_many(\MyAppTest\Car::class, 'manufactor_id')->defaultFilter()->order_by_expr(\MyAppTest\Car::defaultOrder());
     }
 
     /**

@@ -27,7 +27,7 @@ abstract class BaseDatatypeTest extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryDatatypeTest
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\DatatypeTest');
+		return \Granada\Granada::factory(\MyAppTest\DatatypeTest::class);
 	}
 
 	/**

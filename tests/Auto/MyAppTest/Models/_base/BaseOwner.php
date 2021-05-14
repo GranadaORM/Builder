@@ -24,11 +24,11 @@ abstract class BaseOwner extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryOwner
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\Owner');
+		return \Granada\Granada::factory(\MyAppTest\Owner::class);
 	}
 
     public function cars() {
-        return $this->has_many('MyAppTest\Car', 'owner_id')->defaultFilter()->order_by_expr(\MyAppTest\Car::defaultOrder());
+        return $this->has_many(\MyAppTest\Car::class, 'owner_id')->defaultFilter()->order_by_expr(\MyAppTest\Car::defaultOrder());
     }
 
     /**

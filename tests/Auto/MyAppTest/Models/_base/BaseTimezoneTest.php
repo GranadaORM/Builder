@@ -36,7 +36,7 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryTimezoneTest
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\TimezoneTest');
+		return \Granada\Granada::factory(\MyAppTest\TimezoneTest::class);
 	}
 
 	/**

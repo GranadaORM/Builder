@@ -36,18 +36,18 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 	 * @return \{$namespace}\Query{$modelname}
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('{$namespace}\{$modelname}');
+		return \Granada\Granada::factory(\{$namespace}\{$modelname}::class);
 	}
 
 {foreach $belongsTo as $field}
     public function {$field->arvarname}() {
-        return $this->belongs_to('{$field->namespace}\{$field->modelname}', '{$field->varname}');
+        return $this->belongs_to(\{$field->namespace}\{$field->modelname}::class, '{$field->varname}');
     }
 
 {/foreach}
 {foreach $hasMany as $field}
     public function {$field->arvarname}() {
-        return $this->has_many('{$field->namespace}\{$field->modelname}', '{$field->varname}')->defaultFilter()->order_by_expr(\{$field->namespace}\{$field->modelname}::defaultOrder());
+        return $this->has_many(\{$field->namespace}\{$field->modelname}::class, '{$field->varname}')->defaultFilter()->order_by_expr(\{$field->namespace}\{$field->modelname}::defaultOrder());
     }
 
     /**

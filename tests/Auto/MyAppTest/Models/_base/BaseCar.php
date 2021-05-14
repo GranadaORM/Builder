@@ -36,19 +36,19 @@ abstract class BaseCar extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryCar
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\Car');
+		return \Granada\Granada::factory(\MyAppTest\Car::class);
 	}
 
     public function manufactor() {
-        return $this->belongs_to('MyAppTest\Manufactor', 'manufactor_id');
+        return $this->belongs_to(\MyAppTest\Manufactor::class, 'manufactor_id');
     }
 
     public function owner() {
-        return $this->belongs_to('MyAppTest\Owner', 'owner_id');
+        return $this->belongs_to(\MyAppTest\Owner::class, 'owner_id');
     }
 
     public function carParts() {
-        return $this->has_many('MyAppTest\CarPart', 'car_id')->defaultFilter()->order_by_expr(\MyAppTest\CarPart::defaultOrder());
+        return $this->has_many(\MyAppTest\CarPart::class, 'car_id')->defaultFilter()->order_by_expr(\MyAppTest\CarPart::defaultOrder());
     }
 
     /**

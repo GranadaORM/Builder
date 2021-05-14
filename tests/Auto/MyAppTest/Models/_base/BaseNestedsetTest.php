@@ -27,7 +27,7 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryNestedsetTest
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\NestedsetTest');
+		return \Granada\Granada::factory(\MyAppTest\NestedsetTest::class);
 	}
 
 	/**

@@ -26,15 +26,15 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
 	 * @return \MyAppTest\QueryCarPart
 	 */
 	public static function model() {
-		return \Granada\Granada::factory('MyAppTest\CarPart');
+		return \Granada\Granada::factory(\MyAppTest\CarPart::class);
 	}
 
     public function car() {
-        return $this->belongs_to('MyAppTest\Car', 'car_id');
+        return $this->belongs_to(\MyAppTest\Car::class, 'car_id');
     }
 
     public function part() {
-        return $this->belongs_to('MyAppTest\Part', 'part_id');
+        return $this->belongs_to(\MyAppTest\Part::class, 'part_id');
     }
 
 	/**
