@@ -78,7 +78,7 @@ Here's some examples of how you can use the classes to interact with the databas
 Using the example above, let's get the list of the 50 people who were most recently updated:
 
 ```
-$people = \Myapp\Person::model()
+$people = \Myapp\Person::q()
           ->order_by_updated_at_desc()
           ->limit(50)
           ->find_many();
@@ -91,7 +91,7 @@ foreach ($people as $person) {
 Now let's get the list of all the people with the surname "Smith"
 
 ```
-$people = \Myapp\Person::model()
+$people = \Myapp\Person::q()
           ->where_last_name('Smith')
           ->order_by_first_name()
           ->find_many();
