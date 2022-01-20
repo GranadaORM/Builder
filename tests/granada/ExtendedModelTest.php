@@ -156,7 +156,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
             '4' => '2',
             '6' => '2',
         );
-        $this->assertSame($expected, $pairs);
+        $this->assertEquals($expected, $pairs);
     }
 
     public function testfindPairsWithJoin() {
@@ -621,9 +621,9 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         $car = \MyAppTest\Car::model()->find_one(1);
 
         $this->assertSame(1, $car->manufactor_id);
-        $this->assertSame('1', $car->clean_value('manufactor_id'));
+        $this->assertEquals('1', $car->clean_value('manufactor_id'));
         $car->manufactor_id = 2;
-        $this->assertSame('1', $car->clean_value('manufactor_id'));
+        $this->assertEquals('1', $car->clean_value('manufactor_id'));
         $this->assertSame(2, $car->manufactor_id);
         $expected = array(
             'id' => '1',
@@ -637,12 +637,12 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
             'created_at' => null,
             'updated_at' => null,
         );
-        $this->assertSame($expected, $car->clean_values());
+        $this->assertEquals($expected, $car->clean_values());
         $car->save();
         // Changes after save
         $expected['manufactor_id'] = '2';
         $expected['updated_at'] = '2020-08-10 22:33:52';
-        $this->assertSame($expected, $car->clean_values());
+        $this->assertEquals($expected, $car->clean_values());
     }
 
     public function testDefaultFilter() {
