@@ -32,6 +32,14 @@ abstract class BaseTimezoneTest extends \MyAppTest\ORMBaseClass {
     public static $_table = 'timezone_test';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryTimezoneTest
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryTimezoneTest
 	 */

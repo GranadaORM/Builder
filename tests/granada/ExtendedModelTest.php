@@ -47,7 +47,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testGetter() {
-        $car = \MyAppTest\Car::model()->find_one(1);
+        $car = \MyAppTest\Car::q()->find_one(1);
         $expected = 'Car1';
         $this->assertSame($expected, $car->name);
 
@@ -107,7 +107,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testSetterForRelationship() {
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->with('manufactor')
             ->find_one(1);
         $expected = 'Manufactor1';
@@ -120,7 +120,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindPairs() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->find_pairs('id', 'name');
         $expected = array(
             '1' => 'Car1',
@@ -133,7 +133,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindPairsOrdered() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->order_by_id_desc()
             ->find_pairs();
         $expected = array(
@@ -147,7 +147,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindpairsforceselect() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->find_pairs('id', 'manufactor_id');
         $expected = array(
             '1' => '1',
@@ -156,11 +156,11 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
             '4' => '2',
             '6' => '2',
         );
-        $this->assertSame($expected, $pairs);
+        $this->assertEquals($expected, $pairs);
     }
 
     public function testfindPairsWithJoin() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->join('manufactor', 'manufactor.id=car.manufactor_id')
             ->select('car.name', 'car_name')
             ->select('manufactor.name', 'manufactor_name')
@@ -176,7 +176,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindPairsWithJoinIDName() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->join('manufactor', 'manufactor.id=car.manufactor_id')
             ->select('car.name', 'id')
             ->select('manufactor.name', 'name')
@@ -192,7 +192,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindPairsWithJoinOrdered() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->join('manufactor', 'manufactor.id=car.manufactor_id')
             ->select('car.name', 'car_name')
             ->select('manufactor.name', 'manufactor_name')
@@ -209,7 +209,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindPairsWithJoinExpr() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->join('manufactor', 'manufactor.id=car.manufactor_id')
             ->join('owner', 'owner.id=car.owner_id')
             ->select('car.name', 'car_name')
@@ -226,14 +226,14 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testNoResultsfindPairs() {
-        $pairs = \MyAppTest\Car::model()
+        $pairs = \MyAppTest\Car::q()
             ->where_id(10)
             ->find_pairs('id', 'name');
         $this->assertSame(array(), $pairs);
     }
 
     public function testfindManySelect() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->select('name')
             ->find_many();
         // Not an empty array
@@ -254,7 +254,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindManyFirstAndLast() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->find_many();
 
         $expected = array(
@@ -286,7 +286,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindManyFirstAndLastDiffOrder() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->order_by_id_desc()
             ->find_many();
 
@@ -319,7 +319,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testRelatedModelFirstAndLast() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->find_many();
         // SELECT * FROM `car`
 
@@ -380,7 +380,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testRelatedModelFirstAndLastEager() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->with('carParts')
             ->find_many();
         // SELECT `part`.*, `car_part`.`car_id` FROM `part` JOIN `car_part` ON `part`.`id` = `car_part`.`part_id` WHERE `car_part`.`car_id` IN ('1', '2', '3', '4')
@@ -442,7 +442,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindMany() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->find_many();
         // Not an empty array
         $this->assertNotSame(array(), $cars);
@@ -462,7 +462,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfindManyFiltered() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->where_id(3)
             ->find_many();
         // Not an empty array
@@ -478,7 +478,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testNoResultsfindMany() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->where_id(10)
             ->find_many();
         $this->assertSame(array(), $cars->as_array());
@@ -487,14 +487,14 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testfilters() {
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->byName('Car1')
             ->find_one();
         $this->assertSame($car->name, 'Car1');
     }
 
     public function testBooleanType() {
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->find_one(1);
 
         $this->assertSame(1, $car->id);
@@ -504,13 +504,13 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testFakeDelete() {
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->find_one(1);
 
         $this->assertSame(false, $car->is_deleted);
         $car->delete();
 
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->clear_where()
             ->find_one(1);
         $this->assertSame(true, $car->is_deleted);
@@ -518,12 +518,12 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testFakeDeleteForced() {
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->clear_where()
             ->find_one(1);
         $car->delete(true);
 
-        $car = \MyAppTest\Car::model()
+        $car = \MyAppTest\Car::q()
             ->find_one(1);
         $this->assertSame(false, $car);
     }
@@ -538,7 +538,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
                 'is_deleted' => 0,
             )
         ));
-        $count = \MyAppTest\Car::model()->count();
+        $count = \MyAppTest\Car::q()->count();
         $expectedSql   = array();
         $expectedSql[] = "INSERT INTO `car` (`enabled`, `stealth`, `id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('1', '0', '20', 'Car20', '1', '1', '0', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
         $expectedSql[] = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `id` = '20' LIMIT 1";
@@ -563,7 +563,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
                 'is_deleted' => 1,
             )
         ));
-        $count = \MyAppTest\Car::model()->count();
+        $count = \MyAppTest\Car::q()->count();
         $expectedSql   = array();
         $expectedSql[] = "INSERT INTO `car` (`enabled`, `stealth`, `id`, `name`, `manufactor_id`, `owner_id`, `is_deleted`, `sort_order`, `updated_at`, `created_at`) VALUES ('1', '0', '20', 'Car20', '1', '1', '1', '7', '2020-08-10 22:33:52', '2020-08-10 22:33:52')";
         $expectedSql[] = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `id` = '20' LIMIT 1";
@@ -579,7 +579,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testCountAll() {
-        $count = \MyAppTest\Car::model()->count();
+        $count = \MyAppTest\Car::q()->count();
         $expectedSql   = array();
         $expectedSql[] = "SELECT COUNT(*) AS `count` FROM `car` WHERE `car`.`is_deleted` = '0' LIMIT 1";
 
@@ -593,7 +593,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testCountAllCleared() {
-        $count = \MyAppTest\Car::model()->clear_where()->count();
+        $count = \MyAppTest\Car::q()->clear_where()->count();
         $expectedSql   = array();
         $expectedSql[] = "SELECT COUNT(*) AS `count` FROM `car` LIMIT 1";
 
@@ -607,7 +607,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testDirty() {
-        $car = \MyAppTest\Car::model()->find_one(1);
+        $car = \MyAppTest\Car::q()->find_one(1);
 
         $this->assertSame(false, $car->is_dirty('name'));
         $this->assertSame(1, $car->manufactor_id);
@@ -618,12 +618,12 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testCleanValue() {
-        $car = \MyAppTest\Car::model()->find_one(1);
+        $car = \MyAppTest\Car::q()->find_one(1);
 
         $this->assertSame(1, $car->manufactor_id);
-        $this->assertSame('1', $car->clean_value('manufactor_id'));
+        $this->assertEquals('1', $car->clean_value('manufactor_id'));
         $car->manufactor_id = 2;
-        $this->assertSame('1', $car->clean_value('manufactor_id'));
+        $this->assertEquals('1', $car->clean_value('manufactor_id'));
         $this->assertSame(2, $car->manufactor_id);
         $expected = array(
             'id' => '1',
@@ -637,16 +637,16 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
             'created_at' => null,
             'updated_at' => null,
         );
-        $this->assertSame($expected, $car->clean_values());
+        $this->assertEquals($expected, $car->clean_values());
         $car->save();
         // Changes after save
         $expected['manufactor_id'] = '2';
         $expected['updated_at'] = '2020-08-10 22:33:52';
-        $this->assertSame($expected, $car->clean_values());
+        $this->assertEquals($expected, $car->clean_values());
     }
 
     public function testDefaultFilter() {
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->defaultFilter()
             ->find_pairs();
         $this->assertSame(array(
@@ -658,7 +658,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
 
     public function testFindPairsRepresentative() {
         // Representation of cars is id (as name is null) so we will get a list of names
-        $cars = \MyAppTest\Car::model()
+        $cars = \MyAppTest\Car::q()
             ->find_pairs_representation();
         $this->assertSame(array(
             1 => 'Car1',
@@ -728,7 +728,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testVarnameLtOrNULL() {
-        $cars = \MyAppTest\Car::model()->where_owner_id_lt_or_null(15)
+        $cars = \MyAppTest\Car::q()->where_owner_id_lt_or_null(15)
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` < '15' OR `owner_id` IS NULL )";
@@ -736,7 +736,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testVarnameLteOrNULL() {
-        $cars = \MyAppTest\Car::model()->where_owner_id_lte_or_null(15)
+        $cars = \MyAppTest\Car::q()->where_owner_id_lte_or_null(15)
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` <= '15' OR `owner_id` IS NULL )";
@@ -744,7 +744,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testVarnameGtOrNULL() {
-        $cars = \MyAppTest\Car::model()->where_owner_id_gt_or_null(15)
+        $cars = \MyAppTest\Car::q()->where_owner_id_gt_or_null(15)
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` > '15' OR `owner_id` IS NULL )";
@@ -752,7 +752,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testVarnameGteOrNULL() {
-        $cars = \MyAppTest\Car::model()->where_owner_id_gte_or_null(15)
+        $cars = \MyAppTest\Car::q()->where_owner_id_gte_or_null(15)
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND ( `owner_id` >= '15' OR `owner_id` IS NULL )";
@@ -760,7 +760,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testTimezoneInWhere() {
-        $cars = \MyAppTest\Car::model()->where_created_at_gt(\Cake\Chronos\Chronos::now()->addHour())
+        $cars = \MyAppTest\Car::q()->where_created_at_gt(\Cake\Chronos\Chronos::now()->addHour())
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `created_at` > '2020-08-10 23:33:52'";
@@ -768,7 +768,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testTimezoneInWhereChangeTimezone() {
-        $cars = \MyAppTest\Car::model()->where_created_at_gt(\Cake\Chronos\Chronos::parse('2020-08-10 11:28:23', 'America/Chicago')->addHour())
+        $cars = \MyAppTest\Car::q()->where_created_at_gt(\Cake\Chronos\Chronos::parse('2020-08-10 11:28:23', 'America/Chicago')->addHour())
             ->find_many();
 
         $expectedSql = "SELECT * FROM `car` WHERE `car`.`is_deleted` = '0' AND `created_at` > '2020-08-10 17:28:23'";
@@ -776,7 +776,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testBeforeSave() {
-        $carPart = \MyAppTest\CarPart::model()->find_one(1);
+        $carPart = \MyAppTest\CarPart::q()->find_one(1);
         $this->assertSame(1, $carPart->car_id);
 
         $carPart->save();
@@ -795,7 +795,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testAfterSave() {
-        $carPart = \MyAppTest\CarPart::model()->find_one(1);
+        $carPart = \MyAppTest\CarPart::q()->find_one(1);
         $this->assertSame('Car1', $carPart->car->name);
         $carPart->save();
         $this->assertSame('Is Car Saved', $carPart->car->name);
@@ -810,18 +810,18 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testBeforeDelete() {
-        $carPart = \MyAppTest\CarPart::model()->find_one(1);
+        $carPart = \MyAppTest\CarPart::q()->find_one(1);
         $car = $carPart->car;
         $this->assertSame('Car1', $car->name);
         $carPart->delete();
         $car->reload();
         $this->assertSame('Before Delete', $car->name);
-        $carPart = \MyAppTest\CarPart::model()->find_one(1);
+        $carPart = \MyAppTest\CarPart::q()->find_one(1);
         $this->assertSame(false, $carPart);
     }
 
     public function testAfterDelete() {
-        $carPart = \MyAppTest\CarPart::model()->find_one(1);
+        $carPart = \MyAppTest\CarPart::q()->find_one(1);
         $part = $carPart->part;
         $this->assertSame('Part1', $part->name);
         $carPart->delete();
@@ -832,7 +832,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     public function testTimezonesStoredUTC() {
         date_default_timezone_set('Australia/Brisbane');
 
-        $timezoneTest = \MyAppTest\TimezoneTest::model()->find_one(1);
+        $timezoneTest = \MyAppTest\TimezoneTest::q()->find_one(1);
 
         $this->assertSame('2020-08-11 16:47:18', $timezoneTest->datetime1);
         $this->assertSame('2020-08-11 16:47:18', $timezoneTest->datetime1_chronos->toDateTimeString());
@@ -859,7 +859,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         $this->assertSame('Etc/UTC', $timezoneTest->time1_chronos->getTimezone()->getName());
 
         // Test searches
-        $item = \MyAppTest\TimezoneTest::model()
+        $item = \MyAppTest\TimezoneTest::q()
             ->where_datetime1_gt(\Cake\Chronos\Chronos::now())
             ->where_datetime2_gt(\Cake\Chronos\Chronos::now())
             ->where_datetime3_gt(\Cake\Chronos\Chronos::now())
@@ -923,7 +923,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
     public function testTimezonesStoredBrisbane() {
         date_default_timezone_set('Australia/Brisbane');
 
-        $timezoneTest = \MyAppTest\TimezoneTest::model()->find_one(1);
+        $timezoneTest = \MyAppTest\TimezoneTest::q()->find_one(1);
         \Granada\Builder\ExtendedModel::setDatabaseTimezone('Australia/Brisbane');
 
         $this->assertSame('2020-08-11 06:47:18', $timezoneTest->datetime1);
@@ -951,7 +951,7 @@ class ExtendedModelTest extends PHPUnit_Framework_TestCase {
         $this->assertSame('Australia/Brisbane', $timezoneTest->time1_chronos->getTimezone()->getName());
 
         // Test searches
-        $item = \MyAppTest\TimezoneTest::model()
+        $item = \MyAppTest\TimezoneTest::q()
             ->where_datetime1_gt(\Cake\Chronos\Chronos::now())
             ->where_datetime2_gt(\Cake\Chronos\Chronos::now())
             ->where_datetime3_gt(\Cake\Chronos\Chronos::now())

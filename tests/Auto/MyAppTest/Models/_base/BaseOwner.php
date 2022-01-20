@@ -20,6 +20,14 @@ abstract class BaseOwner extends \MyAppTest\ORMBaseClass {
     public static $_table = 'owner';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryOwner
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryOwner
 	 */

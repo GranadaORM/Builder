@@ -1,7 +1,7 @@
 # Builder
 
 [![Latest Stable Version](https://poser.pugx.org/granadaorm/builder/v/stable.png)](https://packagist.org/packages/granadaorm/builder)
-[![Build Status](https://travis-ci.com/GranadaORM/Builder.svg?branch=master)](https://travis-ci.com/GranadaORM/Builder)
+![Build Status](https://github.com/GranadaORM/Builder/actions/workflows/ci.yml/badge.svg)
 
 Class builder for models and controllers for the Granada ORM
 
