@@ -22,6 +22,14 @@ abstract class BaseCarPart extends \MyAppTest\ORMBaseClass {
     public static $_table = 'car_part';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryCarPart
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryCarPart
 	 */

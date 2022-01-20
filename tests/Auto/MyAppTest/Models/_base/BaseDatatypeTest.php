@@ -23,6 +23,14 @@ abstract class BaseDatatypeTest extends \MyAppTest\ORMBaseClass {
     public static $_table = 'datatype_test';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryDatatypeTest
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryDatatypeTest
 	 */

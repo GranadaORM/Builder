@@ -23,6 +23,14 @@ abstract class BaseNestedsetTest extends \MyAppTest\ORMBaseClass {
     public static $_table = 'nestedset_test';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryNestedsetTest
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryNestedsetTest
 	 */

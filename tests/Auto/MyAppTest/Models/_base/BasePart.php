@@ -20,6 +20,14 @@ abstract class BasePart extends \MyAppTest\ORMBaseClass {
     public static $_table = 'part';
 
 	/**
+	 * Quick starting point for all queries
+	 * @return \MyAppTest\QueryPart
+	 */
+	public static function q() {
+		return self::model();
+	}
+
+	/**
 	 * Starting point for all queries
 	 * @return \MyAppTest\QueryPart
 	 */
