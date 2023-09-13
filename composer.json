@@ -40,7 +40,7 @@
         "cakephp/chronos": "^2.0",
         "doctrine/inflector": "^2.0",
         "latte/latte": "^2.10",
-        "granadaorm/granada": "^2.8"
+        "granadaorm/granada": "^3.1"
     },
     "autoload": {
         "psr-4": {
