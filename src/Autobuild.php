@@ -86,6 +86,7 @@ class Autobuild {
 	}
 
 	private $_use_namespaces = false;
+	private $_singularize = false;
 	private $_namespace_prefixes = [];
 	private $_default_namespace = 'Auto';
 	private $_models_output_dir = '';
@@ -173,7 +174,9 @@ class Autobuild {
 		} else {
 			$modelname = ucfirst($this->to_camel_case($tablename));
 		}
+		if ($this->_singularize) {
 			$modelname = $this->singularize($modelname);
+		}
 		// Ensure no numeric-starting models
 		if (is_numeric(substr($modelname, 0, 1))) {
 			$modelname = 'A' . $modelname;
@@ -193,7 +196,9 @@ class Autobuild {
 		} else {
 			$humanName = ucwords(str_replace('_', ' ', $tablename));
 		}
+		if ($this->_singularize) {
 			$humanName = $this->singularize($humanName);
+		}
 		return $humanName;
 	}
 
