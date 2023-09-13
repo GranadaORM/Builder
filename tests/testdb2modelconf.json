@@ -7,6 +7,5 @@
   "model_to_extend": "\\MyAppTest\\ORMBaseClass",
   "controller_model_to_extend": "\\MyAppTest\\Controller",
   "use_namespaces": false,
-  "default_namespace": "MyAppTest",
-  "plural_tables": []
+  "default_namespace": "MyAppTest"
 }

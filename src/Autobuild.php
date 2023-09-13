@@ -88,7 +88,6 @@ class Autobuild {
 	private $_use_namespaces = false;
 	private $_namespace_prefixes = [];
 	private $_default_namespace = 'Auto';
-	private $_plural_tables = [];
 	private $_models_output_dir = '';
 	private $_models_output_dir_map = [];
 	private $_model_to_extend = '';
@@ -103,11 +102,6 @@ class Autobuild {
 
 	public function setDefaultNamespace($val) {
 		$this->_default_namespace = $val;
-		return $this;
-	}
-
-	public function setPluralTables($val) {
-		$this->_plural_tables = $val;
 		return $this;
 	}
 
@@ -179,9 +173,7 @@ class Autobuild {
 		} else {
 			$modelname = ucfirst($this->to_camel_case($tablename));
 		}
-		if (in_array($tablename, $this->_plural_tables)) {
 			$modelname = $this->singularize($modelname);
-		}
 		// Ensure no numeric-starting models
 		if (is_numeric(substr($modelname, 0, 1))) {
 			$modelname = 'A' . $modelname;
@@ -201,9 +193,7 @@ class Autobuild {
 		} else {
 			$humanName = ucwords(str_replace('_', ' ', $tablename));
 		}
-		if (in_array($tablename, $this->_plural_tables)) {
 			$humanName = $this->singularize($humanName);
-		}
 		return $humanName;
 	}
 
@@ -739,7 +729,7 @@ class Autobuild {
 	 */
 	public function doBuild() {
 
-		$tables = $this->getTables($this->_plural_tables);
+		$tables = $this->getTables();
 
 		foreach ($tables as $table) {
 			$namespace = $this->getNamespace($table);

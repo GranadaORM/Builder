@@ -73,7 +73,6 @@ $config = array_merge([
 	'namespace_prefixes' => [],
 	'default_namespace' => 'MyApp',
 	'chronos_model' => '\Cake\Chronos\Chronos',
-	'plural_tables' => [],
 ], json_decode(file_get_contents($configfile), true));
 
 \Granada\ORM::configure('mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name']);
@@ -81,7 +80,6 @@ $config = array_merge([
 \Granada\ORM::configure('password', $config['db_password']);
 
 \Granada\Builder\Autobuild::start()
-	->setPluralTables($config['plural_tables'])
 	->setDefaultNamespace($config['default_namespace'])
 	->setUseNamespaces($config['use_namespaces'])
 	->setNamespacePrefixes($config['namespace_prefixes'])

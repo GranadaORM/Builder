@@ -126,8 +126,7 @@ Create a json config file with contents similar to the following:
   "default_namespace": "MyAppTest",
   "namespace_prefixes": [
     'blog', // Blog namespace has table names starting with "blog_"
-  ],
-  "plural_tables": []
+  ]
 }
 ```
 
