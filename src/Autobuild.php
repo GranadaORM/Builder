@@ -18,6 +18,7 @@ class TableStructure {
 	public $modelToExtend;
 	public $chronosModel;
 	public $custom_baseModel_template;
+	public $extra_model_templates;
 	public $structure;
 
 	public function __construct($data) {
@@ -98,6 +99,7 @@ class Autobuild {
 	private $_chronos_model = '';
 	private $_custom_base_model_template = '';
 	private $_controller_model_to_extend = '';
+	private $_extra_model_templates = [];
 
 	public function setUseNamespaces($val) {
 		$this->_use_namespaces = $val;
@@ -137,6 +139,11 @@ class Autobuild {
 
 	public function setControllerModelToExtend($val) {
 		$this->_controller_model_to_extend = $val;
+		return $this;
+	}
+
+	public function setExtraModelTemplates($val) {
+		$this->_extra_model_templates = $val;
 		return $this;
 	}
 
@@ -702,42 +709,66 @@ class Autobuild {
 		$latte->setTempDirectory(sys_get_temp_dir());
 		$templatedir = dirname(__DIR__) . '/autotemplates/';
 
-		$filesToRender = [
+		$filesToRender = array_merge($tabledata->extra_model_templates, [
 			[
-				'output' => $modelpath . '/_base/Base' . $tabledata->modelname . '.php',
+				'model' => true,
+				'output' => '_base/Base{modelname}.php',
 				'template' => $templatedir . 'baseModelTemplate.latte',
 				'overwrite' => true,
 			],
 			[
-				'output' => $modelpath . '/_base/Query' . $tabledata->modelname . '.php',
+				'model' => true,
+				'output' => '_base/Query{modelname}.php',
 				'template' => $templatedir . 'queryModelTemplate.latte',
 				'overwrite' => true,
 			],
 			[
-				'output' => $modelpath . '/' . $tabledata->modelname . '.php',
+				'model' => true,
+				'output' => '{modelname}.php',
 				'template' => $templatedir . 'modelTemplate.latte',
 				'overwrite' => false,
 			],
 			[
-				'output' => $controllerpath . '/' . $tabledata->modelname . 'Controller.php',
+				'controller' => true,
+				'output' => '{modelname}Controller.php',
 				'template' => $templatedir . 'controllerTemplate.latte',
 				'overwrite' => false,
 			],
-		];
+		]);
 
 		foreach ($filesToRender as $fileToRender) {
+			$outputFile = '';
+			if ($fileToRender['model'] ?? false) {
+				$outputFile = $modelpath;
+			}
+			if ($fileToRender['controller'] ?? false) {
+				$outputFile = $controllerpath;
+			}
+			$outputFile .= '/' . str_replace([
+				'{namespace}',
+				'{modelname}',
+			], [
+				$tabledata->namespace,
+				$tabledata->modelname,
+			], $fileToRender['output']);
 			if (!$fileToRender['overwrite']) {
-				if (file_exists($fileToRender['output'])) {
+				if (file_exists($outputFile)) {
 					continue;
 				}
 			}
 
-			$basepath = dirname($fileToRender['output']);
+			$basepath = dirname($outputFile);
 			if (!file_exists($basepath)) {
 				mkdir($basepath, 0755, true);
 			}
 
-			file_put_contents($fileToRender['output'], $latte->renderToString($fileToRender['template'], $tabledata));
+			$tmpoutputfile = tempnam(sys_get_temp_dir(), 'b');
+			file_put_contents($tmpoutputfile, $latte->renderToString($fileToRender['template'], $tabledata));
+			if (!file_exists($outputFile) || md5_file($tmpoutputfile) != md5_file($outputFile)) {
+				rename($tmpoutputfile, $outputFile);
+			} else {
+				unlink($tmpoutputfile);
+			}
 		}
 	}
 
@@ -758,6 +789,7 @@ class Autobuild {
 			$tabledata->modelToExtend = $this->_model_to_extend;
 			$tabledata->chronosModel = $this->_chronos_model;
 			$tabledata->custom_baseModel_template = $this->_custom_base_model_template;
+			$tabledata->extra_model_templates = $this->_extra_model_templates;
 			if (array_key_exists('sort_order', $tabledata->structure)) {
 				// Check and renumber sort_order columns if found to have zeros
 				$curmax = \Granada\ORM::for_table($table)->max('sort_order');
