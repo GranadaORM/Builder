@@ -16,6 +16,9 @@ class TableStructure {
 	public $nestedSet;
 	public $controllerToExtend;
 	public $modelToExtend;
+	public $chronosModel;
+	public $custom_baseModel_template;
+	public $structure;
 
 	public function __construct($data) {
 		foreach ($data as $field => $content) {
@@ -694,39 +697,47 @@ class Autobuild {
 			$modelpath = dirname($modelpath);
 		}
 
-		$controllerfile = $controllerpath . '/' . $tabledata->modelname . 'Controller.php';
-		$modelfile = $modelpath . '/' . $tabledata->modelname . '.php';
-		$basefile = $modelpath . '/_base/Base' . $tabledata->modelname . '.php';
-		$queryfile = $modelpath . '/_base/Query' . $tabledata->modelname . '.php';
-
-		$basepath = dirname($basefile);
-		if (!file_exists($basepath)) {
-			mkdir($basepath, 0755, true);
-		}
-
 		// initialize Latte environment
 		$latte = new \Latte\Engine;
 		$latte->setTempDirectory(sys_get_temp_dir());
 		$templatedir = dirname(__DIR__) . '/autotemplates/';
 
-		ob_start();
-		$latte->render($templatedir . 'baseModelTemplate.latte', $tabledata);
-		file_put_contents($basefile, ob_get_clean());
+		$filesToRender = [
+			[
+				'output' => $modelpath . '/_base/Base' . $tabledata->modelname . '.php',
+				'template' => $templatedir . 'baseModelTemplate.latte',
+				'overwrite' => true,
+			],
+			[
+				'output' => $modelpath . '/_base/Query' . $tabledata->modelname . '.php',
+				'template' => $templatedir . 'queryModelTemplate.latte',
+				'overwrite' => true,
+			],
+			[
+				'output' => $modelpath . '/' . $tabledata->modelname . '.php',
+				'template' => $templatedir . 'modelTemplate.latte',
+				'overwrite' => false,
+			],
+			[
+				'output' => $controllerpath . '/' . $tabledata->modelname . 'Controller.php',
+				'template' => $templatedir . 'controllerTemplate.latte',
+				'overwrite' => false,
+			],
+		];
 
-		ob_start();
-		$latte->render($templatedir . 'queryModelTemplate.latte', $tabledata);
-		file_put_contents($queryfile, ob_get_clean());
+		foreach ($filesToRender as $fileToRender) {
+			if (!$fileToRender['overwrite']) {
+				if (file_exists($fileToRender['output'])) {
+					continue;
+				}
+			}
 
-		if (!file_exists($modelfile)) {
-			ob_start();
-			$latte->render($templatedir . 'modelTemplate.latte', $tabledata);
-			file_put_contents($modelfile, ob_get_clean());
-		}
+			$basepath = dirname($fileToRender['output']);
+			if (!file_exists($basepath)) {
+				mkdir($basepath, 0755, true);
+			}
 
-		if (!file_exists($controllerfile)) {
-			ob_start();
-			$latte->render($templatedir . 'controllerTemplate.latte', $tabledata);
-			file_put_contents($controllerfile, ob_get_clean());
+			file_put_contents($fileToRender['output'], $latte->renderToString($fileToRender['template'], $tabledata));
 		}
 	}
 
