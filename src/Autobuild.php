@@ -646,6 +646,7 @@ class Autobuild {
 		}
 		return new TableStructure([
 			'humanName' => $humanName,
+			'humanNames' => $this->pluralize($humanName),
 			'representation' => $representation,
 			'defaultorder' => $defaultorder ? $defaultorder : $representation,
 			'tablename' => $tablename,
