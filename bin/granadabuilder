@@ -67,7 +67,9 @@ $config = array_merge([
 	'models_output_dir' => __DIR__ . '/Auto',
 	'models_output_dir_map' => [],
 	'model_to_extend' => '\MyApp\ORMBaseClass',
+	'base_model_extra_template' => '',
 	'controller_model_to_extend' => '\Auto\Controller',
+	'controller_template' => dirname(__DIR__) . '/autotemplates/controllerTemplate.latte',
 	'custom_baseModel_template' => '',
 	'use_namespaces' => false,
 	'namespace_prefixes' => [],
@@ -86,7 +88,9 @@ $config = array_merge([
 	->setNamespacePrefixes($config['namespace_prefixes'])
 	->setOutputDirs($config['models_output_dir'], $config['models_output_dir_map'])
 	->setModelToExtend($config['model_to_extend'])
+	->setBaseModelExtratemplate($config['base_model_extra_template'])
 	->setControllerModelToExtend($config['controller_model_to_extend'])
+	->setControllerTemplate($config['controller_template'])
 	->setExtraModelTemplates($config['extra_model_templates'])
 	->setChronosModel($config['chronos_model'])
 	->setCustomBaseModelTemplate($config['custom_baseModel_template'])

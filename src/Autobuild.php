@@ -96,9 +96,11 @@ class Autobuild {
 	private $_models_output_dir = '';
 	private $_models_output_dir_map = [];
 	private $_model_to_extend = '';
+	private $_base_model_extra_template = '';
 	private $_chronos_model = '';
 	private $_custom_base_model_template = '';
 	private $_controller_model_to_extend = '';
+	private $_controller_template = '';
 	private $_extra_model_templates = [];
 
 	public function setUseNamespaces($val) {
@@ -127,6 +129,11 @@ class Autobuild {
 		return $this;
 	}
 
+	public function setBaseModelExtratemplate($val) {
+		$this->_base_model_extra_template = $val;
+		return $this;
+	}
+
 	public function setChronosModel($val) {
 		$this->_chronos_model = $val;
 		return $this;
@@ -139,6 +146,11 @@ class Autobuild {
 
 	public function setControllerModelToExtend($val) {
 		$this->_controller_model_to_extend = $val;
+		return $this;
+	}
+
+	public function setControllerTemplate($val) {
+		$this->_controller_template = $val;
 		return $this;
 	}
 
@@ -709,6 +721,8 @@ class Autobuild {
 		$latte->setTempDirectory(sys_get_temp_dir());
 		$templatedir = dirname(__DIR__) . '/autotemplates/';
 
+		$tabledata->custom_baseModel_template = $this->_base_model_extra_template;
+
 		$filesToRender = array_merge($tabledata->extra_model_templates, [
 			[
 				'model' => true,
@@ -731,7 +745,7 @@ class Autobuild {
 			[
 				'controller' => true,
 				'output' => '{modelname}Controller.php',
-				'template' => $templatedir . 'controllerTemplate.latte',
+				'template' => $this->_controller_template,
 				'overwrite' => false,
 			],
 		]);
