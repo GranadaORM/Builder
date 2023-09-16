@@ -19,6 +19,7 @@ class TableStructure {
 	public $chronosModel;
 	public $custom_baseModel_template;
 	public $extra_model_templates;
+	public $trackChangeTime;
 	public $structure;
 
 	public function __construct($data) {
@@ -373,6 +374,7 @@ class Autobuild {
 		$structure = array();
 		$fieldnames = array();
 		$deleteForReal = true;
+		$trackChangeTime = false;
 		foreach ($tablefields as $tablefield) {
 			$trimmed = trim($tablefield['Type']);
 			if (strpos($trimmed, ')') === FALSE) {
@@ -577,6 +579,7 @@ class Autobuild {
 			}
 			if ($tablefieldname == 'updated_at') {
 				$hidden_in_forms = true;
+				$trackChangeTime = true;
 			}
 			if (array_key_exists('_hidden', $cflags)) {
 				$hidden_in_forms = true;
@@ -679,6 +682,7 @@ class Autobuild {
 			'hasMany' => $hasMany,
 			'belongsTo' => $belongsTo,
 			'deleteForReal' => $deleteForReal,
+			'trackChangeTime' => $trackChangeTime,
 			'nestedSet' => $nestedSet,
 		]);
 	}
