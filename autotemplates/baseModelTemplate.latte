@@ -369,7 +369,7 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 	public function fieldHelpText($field) {
 		$items = [
 {foreach $structure as $field}
-			'{$field->name}' => '{$field->helptext}',
+			'{$field->name}' => '{addslashes($field->helptext)}',
 {/foreach}
 		];
 		if (!array_key_exists($field, $items)) {
