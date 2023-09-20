@@ -105,10 +105,10 @@ abstract class ExtendedModel extends \Granada\Model {
                 // No timezone adjustment for date of birth
             } elseif ($datetype['timezone_mode'] == 'user') {
                 // Timezone adjustment to logged in user
-                $date = $date->timezone($class::currentTimezone());
+                $date = $date->setTimezone($class::currentTimezone());
             } elseif ($datetype['timezone_mode'] == 'site') {
                 // Timezone adjustment to site default
-                $date = $date->timezone($class::siteTimezone());
+                $date = $date->setTimezone($class::siteTimezone());
             }
             if ($datetype['type'] == 'date') {
                 return $date->toDateString();
@@ -175,10 +175,10 @@ abstract class ExtendedModel extends \Granada\Model {
             } elseif ($datetype['type'] == 'dob') {
                 $value = $date->toDateString();
             } elseif ($datetype['type'] == 'datetime') {
-                $date = $date->timezone(self::$_database_timezone);
+                $date = $date->setTimezone(self::$_database_timezone);
                 $value = $date->toDateTimeString();
             } elseif ($datetype['type'] == 'time') {
-                $date = $date->timezone('Etc/UTC');
+                $date = $date->setTimezone('Etc/UTC');
                 $value = $date->toTimeString();
             }
         }
@@ -269,7 +269,7 @@ abstract class ExtendedModel extends \Granada\Model {
                 $timezone = self::$_database_timezone;
             }
 
-            $value = $value->timezone($timezone)->format($datetype['format']);
+            $value = $value->setTimezone($timezone)->format($datetype['format']);
         }
 
         return $value;
