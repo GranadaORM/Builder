@@ -103,6 +103,7 @@ class Autobuild {
 	private $_controller_model_to_extend = '';
 	private $_controller_template = '';
 	private $_extra_model_templates = [];
+	private $_extra_generic_templates = [];
 
 	public function setUseNamespaces($val) {
 		$this->_use_namespaces = $val;
@@ -157,6 +158,11 @@ class Autobuild {
 
 	public function setExtraModelTemplates($val) {
 		$this->_extra_model_templates = $val;
+		return $this;
+	}
+
+	public function setExtraGenericTemplates($val) {
+		$this->_extra_generic_templates = $val;
 		return $this;
 	}
 
@@ -797,6 +803,7 @@ class Autobuild {
 
 		$tables = $this->getTables();
 
+		$structures = [];
 		foreach ($tables as $table) {
 			$namespace = $this->getNamespace($table);
 			$modelname = $this->getModelName($table);
@@ -818,7 +825,27 @@ class Autobuild {
 					$zero_sort_order->save();
 				}
 			}
-			$this->createModels($tabledata);
+			$structures[] = (object)[
+				'namespace' => $namespace,
+				'modelname' => $modelname,
+				'humanName' => $humanName,
+				'tabledata' => $tabledata,
+			];
+		}
+		foreach ($structures as $structure) {
+			$this->createModels($structure->tabledata);
+		}
+		$latte = new \Latte\Engine;
+		$latte->setTempDirectory(sys_get_temp_dir());
+		foreach ($this->_extra_generic_templates as $generic_template) {
+			$tmpoutputfile = tempnam(sys_get_temp_dir(), 'b');
+			file_put_contents($tmpoutputfile, $latte->renderToString($generic_template['template'], ['structures' => $structures]));
+			if (!file_exists($generic_template['output']) || md5_file($tmpoutputfile) != md5_file($generic_template['output'])) {
+				rename($tmpoutputfile, $generic_template['output']);
+			} else {
+				unlink($tmpoutputfile);
+			}
+			dump($generic_template);
 		}
 	}
 }

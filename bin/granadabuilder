@@ -76,6 +76,7 @@ $config = array_merge([
 	'default_namespace' => 'MyApp',
 	'chronos_model' => '\Cake\Chronos\Chronos',
 	'extra_model_templates' => [],
+	'extra_generic_templates' => [],
 ], json_decode(file_get_contents($configfile), true));
 
 \Granada\ORM::configure('mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name']);
@@ -92,6 +93,7 @@ $config = array_merge([
 	->setControllerModelToExtend($config['controller_model_to_extend'])
 	->setControllerTemplate($config['controller_template'])
 	->setExtraModelTemplates($config['extra_model_templates'])
+	->setExtraGenericTemplates($config['extra_generic_templates'])
 	->setChronosModel($config['chronos_model'])
 	->setCustomBaseModelTemplate($config['custom_baseModel_template'])
 	->doBuild();
