@@ -845,7 +845,6 @@ class Autobuild {
 			} else {
 				unlink($tmpoutputfile);
 			}
-			dump($generic_template);
 		}
 	}
 }
