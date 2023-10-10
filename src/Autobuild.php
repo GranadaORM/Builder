@@ -289,10 +289,10 @@ class Autobuild {
 	public function getBelongsTo($tablename) {
 		$tablefields = \Granada\ORM::for_table('ost')->raw_query('
 			SELECT
-				table_name,
-				column_name,
-				referenced_table_name,
-				referenced_column_name
+				table_name as table_name,
+				column_name as column_name,
+				referenced_table_name as referenced_table_name,
+				referenced_column_name as referenced_column_name
 			FROM
 				information_schema.key_column_usage
 			WHERE
@@ -327,10 +327,10 @@ class Autobuild {
 	public function getHasMany($tablename) {
 		$tablefields = \Granada\ORM::for_table('ost')->raw_query('
 			SELECT
-				table_name,
-				column_name,
-				referenced_table_name,
-				referenced_column_name
+				table_name as table_name,
+				column_name as column_name,
+				referenced_table_name as referenced_table_name,
+				referenced_column_name as referenced_column_name
 			FROM
 				information_schema.key_column_usage
 			WHERE
