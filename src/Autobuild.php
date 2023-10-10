@@ -97,6 +97,7 @@ class Autobuild {
 	private $_models_output_dir = '';
 	private $_models_output_dir_map = [];
 	private $_model_to_extend = '';
+	private $_granada_connection_name = '';
 	private $_base_model_extra_template = '';
 	private $_chronos_model = '';
 	private $_custom_base_model_template = '';
@@ -128,6 +129,11 @@ class Autobuild {
 
 	public function setModelToExtend($val) {
 		$this->_model_to_extend = $val;
+		return $this;
+	}
+
+	public function setGranadaConnectionName($val) {
+		$this->_granada_connection_name = $val;
 		return $this;
 	}
 
@@ -813,6 +819,7 @@ class Autobuild {
 			$tabledata->controllerToExtend = $this->_controller_model_to_extend;
 			$tabledata->modelToExtend = $this->_model_to_extend;
 			$tabledata->chronosModel = $this->_chronos_model;
+			$tabledata->granadaConnectionName = $this->_granada_connection_name;
 			$tabledata->custom_baseModel_template = $this->_custom_base_model_template;
 			$tabledata->extra_model_templates = $this->_extra_model_templates;
 			if (array_key_exists('sort_order', $tabledata->structure)) {
