@@ -516,7 +516,7 @@ class Autobuild {
 			} else if ($first == 'decimal') {
 				$tftype = 'float';
 				$doctype = 'float';
-			} else if (($first == 'int') || ($first == 'mediumint') || ($first == 'tinyint')) {
+			} else if (($first == 'int') || ($first == 'mediumint') || ($first == 'mediumint unsigned') || ($first == 'tinyint')) {
 				if ($length == '1') {
 					if (isset($tablefield['Default']) || ($tablefield['Null'] == 'NO')) {
 						$tftype = 'bool';
