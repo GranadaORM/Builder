@@ -208,7 +208,7 @@ abstract class ExtendedModel extends \Granada\Model {
      * @return self
      */
     public static function create($data = []) {
-        $model = parent::create();
+        $model = (get_called_class())::model()->create();
 		if (!is_array($data)) {
 			$data = array();
 		}
