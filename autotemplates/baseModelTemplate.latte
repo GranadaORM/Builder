@@ -27,6 +27,7 @@ namespace {$namespace};
 {/foreach}
  *
  * @method \{$namespace}\{$modelname} save(boolean $ignore = false) Save and reload the model, optionally ignoring existing id (Use INSERT ON DUPLICATE KEY UPDATE query).
+ * @method static \{$namespace}\{$modelname} create($data = [])
  */
 abstract class Base{$modelname} extends {$modelToExtend} {
     public static $_table = '{$tablename}';
