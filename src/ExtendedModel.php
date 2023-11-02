@@ -132,6 +132,8 @@ abstract class ExtendedModel extends \Granada\Model {
             case 'reference':
             case 'integer':
                 return intval($value);
+            case 'currency':
+                return floatval($value);
             default:
                 return $value;
         }
