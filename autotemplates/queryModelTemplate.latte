@@ -113,8 +113,8 @@ namespace {$namespace};
  * @method \{$namespace}\Query{$modelname} order_by_rand() Fetch items in a random order. Use sparingly and ensure a LIMIT is placed
  * @method \{$namespace}\Query{$modelname} order_by_expr(string $clause) Add an unquoted expression as an ORDER BY clause
  * @method \{$namespace}\Query{$modelname} order_by_list(string $column_name, integer[] $list) Add an ORDER BY FIELD column clause to make the ordering a specific sequence
- * @method \{$namespace}\Query{$modelname} defaultFilter()
  * @method \{$namespace}\Query{$modelname} onlyif(bool $condition, callable $query) Add a WHERE, ORDER BY or LIMIT clause only if the condition is true
+ * @method string get_select_query() Simulate what would be sent to the database server
  */
 
 abstract class Query{$modelname} extends {$modelToExtend} {
