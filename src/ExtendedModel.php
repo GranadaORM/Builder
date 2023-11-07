@@ -65,7 +65,6 @@ abstract class ExtendedModel extends \Granada\Model {
     }
 
     public function getDatabaseTimezone() {
-        ray($this);
         if (isset(self::$_database_timezone[$this->getDatabaseConnectionName()])) {
             return self::$_database_timezone[$this->getDatabaseConnectionName()];
         }
