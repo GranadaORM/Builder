@@ -46,15 +46,30 @@ abstract class ExtendedModel extends \Granada\Model {
      * The timezone for datetime fields stored in the database
      * @var string
      */
-    private static $_database_timezone = 'Etc/UTC';
+    private static $_database_timezone = [\Granada\ORM::DEFAULT_CONNECTION => 'Etc/UTC'];
 
     /**
      * Set the timezone used for datetime fields in the database
      * @param string $timezone e.g. 'Etc/UTC'
      * @return void
      */
-    public static function setDatabaseTimezone($timezone) {
-        self::$_database_timezone = $timezone;
+    public static function setDatabaseTimezone($timezone, $connection_name = \Granada\ORM::DEFAULT_CONNECTION) {
+        self::$_database_timezone[$connection_name] = $timezone;
+    }
+
+    /**
+     * Override in the model
+     */
+    public function getDatabaseConnectionName() {
+        return \Granada\ORM::DEFAULT_CONNECTION;
+    }
+
+    public function getDatabaseTimezone() {
+        ray($this);
+        if (isset(self::$_database_timezone[$this->getDatabaseConnectionName()])) {
+            return self::$_database_timezone[$this->getDatabaseConnectionName()];
+        }
+        return self::$_database_timezone[\Granada\ORM::DEFAULT_CONNECTION];
     }
 
     public function __get($property) {
@@ -82,7 +97,7 @@ abstract class ExtendedModel extends \Granada\Model {
                 } else if ($datetype['timezone_mode'] == 'site') {
                     return \Cake\Chronos\Chronos::parse($this->$propertybase, $class::siteTimezone());
                 } else {
-                    return \Cake\Chronos\Chronos::parse($this->$propertybase, self::$_database_timezone);
+                    return \Cake\Chronos\Chronos::parse($this->$propertybase, $this->getDatabaseTimezone());
                 }
             }
             return \Cake\Chronos\Chronos::parse($this->$propertybase);
@@ -97,7 +112,7 @@ abstract class ExtendedModel extends \Granada\Model {
             if ($datetype['type'] == 'time') {
                 $date = \Cake\Chronos\Chronos::parse($rawval);
             } else {
-                $date = \Cake\Chronos\Chronos::parse($rawval, self::$_database_timezone);
+                $date = \Cake\Chronos\Chronos::parse($rawval, $this->getDatabaseTimezone());
             }
             if ($datetype['type'] == 'date') {
                 // No timezone adjustment for date
@@ -167,7 +182,7 @@ abstract class ExtendedModel extends \Granada\Model {
                         } else if ($datetype['timezone_mode'] == 'site') {
                             $date = \Cake\Chronos\Chronos::parse($value, $class::siteTimezone());
                         } else {
-                            $date = \Cake\Chronos\Chronos::parse($value, self::$_database_timezone);
+                            $date = \Cake\Chronos\Chronos::parse($value, $this->getDatabaseTimezone());
                         }
                     }
                 }
@@ -177,7 +192,7 @@ abstract class ExtendedModel extends \Granada\Model {
             } elseif ($datetype['type'] == 'dob') {
                 $value = $date->toDateString();
             } elseif ($datetype['type'] == 'datetime') {
-                $date = $date->setTimezone(self::$_database_timezone);
+                $date = $date->setTimezone($this->getDatabaseTimezone());
                 $value = $date->toDateTimeString();
             } elseif ($datetype['type'] == 'time') {
                 $date = $date->setTimezone('Etc/UTC');
@@ -268,7 +283,7 @@ abstract class ExtendedModel extends \Granada\Model {
             } else if ($datetype['timezone_mode'] == 'none') {
                 $timezone = $value->timezone; // No timezone, time is time of day regardless of the time zone checking against
             } else {
-                $timezone = self::$_database_timezone;
+                $timezone = (new $class)->getDatabaseTimezone();
             }
 
             $value = $value->setTimezone($timezone)->format($datetype['format']);

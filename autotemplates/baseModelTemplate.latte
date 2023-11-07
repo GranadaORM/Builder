@@ -48,6 +48,10 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 		return \Granada\Granada::factory(\{$namespace}\{$modelname}::class, '{$granadaConnectionName}');
 	}
 
+	public function getDatabaseConnectionName() {
+		return '{$granadaConnectionName}';
+	}
+
 {foreach $belongsTo as $field}
     public function {$field->arvarname}() {
         return $this->belongs_to(\{$field->namespace}\{$field->modelname}::class, '{$field->varname}', null, '{$granadaConnectionName}');
