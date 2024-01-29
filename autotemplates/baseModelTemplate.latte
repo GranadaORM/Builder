@@ -327,6 +327,15 @@ abstract class Base{$modelname} extends {$modelToExtend} {
 		return false;
 	}
 
+{foreach $belongsTo as $field}
+	/**
+	 * @return \{$field->namespace}\Query{$field->modelname}
+	 */
+	public function referenceFilter_{$field->varname}() {
+		return \{$field->namespace}\{$field->modelname}::q()->defaultFilter();
+	}
+
+{/foreach}
 	/**
 	 * Get the list of tags from the database comment
 	 * @param string $field the field name
